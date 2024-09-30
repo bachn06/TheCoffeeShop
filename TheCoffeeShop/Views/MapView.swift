@@ -11,6 +11,7 @@ import MapKit
 struct MapView: View {
     @State private var cameraPosition: MapCameraPosition = .automatic
     @State private var userLocation: CLLocationCoordinate2D?
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -32,13 +33,15 @@ struct MapView: View {
                     .background(Color(.systemGray6))
                     .clipShape(Circle())
                     .onTapGesture {
-                        
+                        dismiss()
                     }
                 
                 SearchView()
             }
             .padding()
         }
+        .toolbar(.hidden)
+        .toolbar(.hidden, for: .tabBar)
     }
     
     private func checkLocationServices() {

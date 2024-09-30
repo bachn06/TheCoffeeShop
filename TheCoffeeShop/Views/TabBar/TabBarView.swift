@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum TabbarItems: Int, CaseIterable {
-    case home
+    case home = 0
     case favorite
     case cart
     case profile

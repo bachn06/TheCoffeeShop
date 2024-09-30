@@ -9,7 +9,6 @@ import SwiftUI
 
 struct AddressAndContactView: View {
     @State var address: String = "This is address for testing"
-    var addressTapped: () -> Void
     
     var body: some View {
         HStack {
@@ -17,9 +16,6 @@ struct AddressAndContactView: View {
             Text(address)
                 .font(.subheadline)
                 .fontWeight(.semibold)
-                .onTapGesture {
-                    addressTapped()
-                }
             Spacer()
             Image(systemName: "phone.fill")
         }
@@ -28,5 +24,5 @@ struct AddressAndContactView: View {
 }
 
 #Preview {
-    AddressAndContactView(addressTapped: {})
+    AddressAndContactView()
 }

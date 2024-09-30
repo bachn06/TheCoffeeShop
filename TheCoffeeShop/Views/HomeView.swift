@@ -15,18 +15,18 @@ let menuItems = [
 ]
 
 struct HomeView: View {
+    
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
                 // Address and contact info
-                AddressAndContactView(addressTapped: {
-                    NavigationLink {
-                        MapView()
-                    } label: {
-                        EmptyView()
-                    }
-                })
-                .padding(.horizontal, 10)
+                NavigationLink(
+                    destination: MapView()
+                ) {
+                    AddressAndContactView()
+                    .padding(.horizontal, 10)
+                }
+                
                 // Search Bar
                 SearchView()
                     .padding(.horizontal, 10)
