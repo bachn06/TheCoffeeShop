@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct CartView: View {
-    @SceneStorage("selectionTab") var pageIndex = 3
-    @EnvironmentObject var tabbarRouter: TabBarRouter
     
     var body: some View {
         ZStack {

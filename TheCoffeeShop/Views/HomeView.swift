@@ -15,9 +15,6 @@ let menuItems = [
 ]
 
 struct HomeView: View {
-    @SceneStorage("selectionTab") var pageIndex = 0
-    @EnvironmentObject var tabbarRouter: TabBarRouter
-    
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {

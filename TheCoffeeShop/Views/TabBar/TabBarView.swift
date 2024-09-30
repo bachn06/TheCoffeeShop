@@ -7,60 +7,70 @@
 
 import SwiftUI
 
-class TabBarRouter: ObservableObject {
-    @Published var currentPage: Page = .home
-}
-
-enum Page {
+enum TabbarItems: Int, CaseIterable {
     case home
-    case favourite
+    case favorite
     case cart
     case profile
+    
+    var title: String{
+        switch self {
+        case .home:
+            return "Home"
+        case .favorite:
+            return "Favorite"
+        case .cart:
+            return "Cart"
+        case .profile:
+            return "Profile"
+        }
+    }
+    
+    var iconName: String{
+        switch self {
+        case .home:
+            return "house.fill"
+        case .favorite:
+            return "heart.fill"
+        case .cart:
+            return "cart.fill"
+        case .profile:
+            return "person.fill"
+        }
+    }
 }
 
 struct TabBarView: View {
-    @StateObject var tabbarRouter = TabBarRouter()
-    
-    @ViewBuilder var contentView: some View {
-        switch tabbarRouter.currentPage {
-        case .home:
-            HomeView()
-                .environmentObject(tabbarRouter)
-        case .favourite:
-            FavouriteView()
-                .environmentObject(tabbarRouter)
-        case .cart:
-            CartView()
-                .environmentObject(tabbarRouter)
-        case .profile:
-            ProfileView()
-                .environmentObject(tabbarRouter)
-        }
-    }
+    @State var selectedTab = 0
 
     var body: some View {
-        let items = [
-            TabBarItem(icon: "house.fill", title: "Home", action: {}, tabbarRouter: tabbarRouter, assignedPage: .home),
-            TabBarItem(icon: "heart.fill", title: "Favourite", action: {}, tabbarRouter: tabbarRouter, assignedPage: .favourite),
-            TabBarItem(icon: "cart.fill", title: "Cart", badge: 3, action: {}, tabbarRouter: tabbarRouter, assignedPage: .cart),
-            TabBarItem(icon: "person.fill", title: "Profile", showProfileImage: false, action: {}, tabbarRouter: tabbarRouter, assignedPage: .profile)
-        ]
-        ZStack {
-            VStack {
-                contentView
-                Spacer()
-                    .frame(height: 80)
+        ZStack(alignment: .bottom) {
+            TabView(selection: $selectedTab) {
+                HomeView()
+                    .tag(0)
+
+                FavouriteView()
+                    .tag(1)
+
+                CartView()
+                    .tag(2)
+
+                ProfileView()
+                    .tag(3)
             }
-            .ignoresSafeArea(edges: .bottom)
-            
-            VStack {
-                Spacer()
-                HStack(alignment: .top) {
-                    ForEach(items, id: \.title) { item in
-                        TabBarItem(icon: item.icon, title: item.title, badge: item.badge, action: {}, tabbarRouter: tabbarRouter, assignedPage: item.assignedPage)
+
+            ZStack{
+                HStack {
+                    ForEach((TabbarItems.allCases), id: \.self){ item in
+                        TabBarItem(icon: item.iconName, title: item.title, badge: item.rawValue == 2 ? 3 : nil, isActive: (selectedTab == item.rawValue))
+                            .onTapGesture {
+                                selectedTab = item.rawValue
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.horizontal)
                     }
-                    .frame(maxWidth: .infinity)
                 }
+                .frame(maxWidth: .infinity)
                 .background(Color(hex: "#F8F7FA"))
             }
         }

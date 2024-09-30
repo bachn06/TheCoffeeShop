@@ -13,16 +13,13 @@ struct TabBarItem: View {
     let title: String
     var badge: Int? = nil
     var showProfileImage: Bool = false
-    var action: () -> Void
-
-    @ObservedObject var tabbarRouter: TabBarRouter
-    let assignedPage: Page
+    let isActive: Bool
 
     var body: some View {
         VStack {
             Rectangle()
                 .frame(width: titleWidth(title: title) ,height: 3)
-                .foregroundStyle(tabbarRouter.currentPage == assignedPage ? .red : .clear)
+                .foregroundStyle(isActive ? .red : .clear)
                 .padding(.bottom, 5)
             if showProfileImage {
                 Image("leaf.fill")
@@ -35,7 +32,7 @@ struct TabBarItem: View {
                     Image(systemName: icon)
                         .resizable()
                         .frame(width: 24, height: 24)
-                        .foregroundColor(tabbarRouter.currentPage == assignedPage ? .brown : .gray)
+                        .foregroundColor(isActive ? .brown : .gray)
                     
                     if let badge = badge {
                         Text("\(badge)")
@@ -51,13 +48,9 @@ struct TabBarItem: View {
             }
             Text(title)
                 .font(.caption)
-                .foregroundColor(tabbarRouter.currentPage == assignedPage ? .brown : .gray)
+                .foregroundColor(isActive ? .brown : .gray)
         }
         .padding(.top, 0)
-        .onTapGesture {
-            action()
-            tabbarRouter.currentPage = assignedPage
-        }
     }
     
     private func titleWidth(title: String) -> CGFloat {
@@ -68,5 +61,5 @@ struct TabBarItem: View {
 }
 
 #Preview {
-    TabBarItem(icon: "house.fill", title: "Home", action: {}, tabbarRouter: TabBarRouter(), assignedPage: .home)
+    TabBarItem(icon: "house.fill", title: "Home", isActive: true)
 }

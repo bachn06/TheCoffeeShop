@@ -8,9 +8,6 @@
 import SwiftUI
 
 struct FavouriteView: View {
-    @SceneStorage("selectionTab") var pageIndex = 1
-    @EnvironmentObject var tabbarRouter: TabBarRouter
-    
     var body: some View {
         ZStack {
             VStack(spacing: 20) {
