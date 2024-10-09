@@ -21,13 +21,13 @@ struct CategoryButtonView: View {
             HStack {
                 Image(systemName: icon)
                     .resizable()
-                    .frame(width: 20, height: 20)
+                    .frame(width: 16, height: 16)
                 Text(title)
                     .font(.system(size: 12, weight: .medium))
                     .fixedSize()
                     .foregroundStyle(isSelected ? .white : .black)
             }
-            .padding()
+            .padding(10)
             .background(
                 Group {
                     if isSelected {
@@ -37,9 +37,9 @@ struct CategoryButtonView: View {
                     }
                 }
             )
-            .cornerRadius(18)
+            .cornerRadius(36)
             .overlay(
-                RoundedRectangle(cornerRadius: 18)
+                RoundedRectangle(cornerRadius: 36)
                     .stroke(Color.black, lineWidth: 1)
             )
             .frame(minWidth: 0)

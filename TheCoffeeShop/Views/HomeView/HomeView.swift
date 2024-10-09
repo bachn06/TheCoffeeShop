@@ -24,7 +24,8 @@ struct HomeView: View {
                     destination: MapView()
                 ) {
                     AddressAndContactView()
-                    .padding(.horizontal, 10)
+                        .background()
+                        .padding(.horizontal, 10)
                 }
                 
                 // Search Bar

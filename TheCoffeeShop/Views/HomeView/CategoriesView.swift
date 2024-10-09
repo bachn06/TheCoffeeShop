@@ -25,10 +25,12 @@ struct CategoriesView: View {
                     .font(.headline)
                     .padding(.horizontal)
                 
-                GeometryReader { geometry in
-                    self.generateContent(in: geometry)
+                ScrollView {
+                    GeometryReader { geometry in
+                        self.generateContent(in: geometry)
+                    }
+                    .padding(.horizontal, 5)
                 }
-                .padding(.horizontal, 10)
             }
         }
     }

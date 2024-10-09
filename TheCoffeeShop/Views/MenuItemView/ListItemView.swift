@@ -10,13 +10,14 @@ import SwiftUI
 struct ListItemView: View {
     @State private var quantity: Int = 0
     @State var isLiked = false
-    var showQuantityOption = false
+    var showQuantityOption = true
+    var showFavouriteButton = true
     
     var body: some View {
         HStack {
             Image(systemName: "leaf.fill")
                 .resizable()
-                .aspectRatio(contentMode: .fit)
+                .aspectRatio(contentMode: .fill)
                 .frame(width: 94, height: 63)
                 .cornerRadius(14)
 
@@ -27,28 +28,30 @@ struct ListItemView: View {
                 Text("2$")
                     .font(.subheadline)
                     .foregroundColor(.black)
-                Button(action: {
-                    isLiked.toggle()
-                }) {
-                    Image(systemName: isLiked ? "heart.fill" : "heart")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .foregroundColor(isLiked ? .red : .gray)
-                        .frame(width: 24, height: 24)
-                        .padding(8)
+                if showFavouriteButton {
+                    Button(action: {
+                        isLiked.toggle()
+                    }) {
+                        Image(systemName: isLiked ? "heart.fill" : "heart")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .foregroundColor(isLiked ? .red : .gray)
+                            .frame(width: 24, height: 24)
+                            .padding(8)
+                    }
                 }
             }
 
             Spacer()
 
-            VStack {
+            VStack(alignment: .trailing) {
                 HStack {
                     Image(systemName: "star.fill")
                         .foregroundColor(.gray)
                     Text("\(4.8, specifier: "%.1f")")
                         .foregroundColor(.gray)
                 }
-                .padding(.trailing, 0)
+                
                 if showQuantityOption {
                     HStack {
                         Button(action: {
@@ -90,8 +93,9 @@ struct ListItemView: View {
         }
         .padding()
         .background(Color.white)
-        .cornerRadius(10)
+        .cornerRadius(24)
         .shadow(radius: 1)
+        .padding()
     }
 }
 

@@ -134,6 +134,58 @@
 			path = OrderStatusView;
 			sourceTree = "<group>";
 		};
+		3623813D2CB6D89B00109A3E /* HomeView */ = {
+			isa = PBXGroup;
+			children = (
+				369AE6382CA7B8FE001FC4E8 /* HomeView.swift */,
+				369AE63E2CA7B9CA001FC4E8 /* AddressAndContactView.swift */,
+				369AE63C2CA7B92B001FC4E8 /* CategoriesView.swift */,
+				369AE6442CA7C7FD001FC4E8 /* CategoryButtonView.swift */,
+				369AE6402CA7BA1E001FC4E8 /* SearchView.swift */,
+			);
+			path = HomeView;
+			sourceTree = "<group>";
+		};
+		3623813E2CB6D8A200109A3E /* LoginView */ = {
+			isa = PBXGroup;
+			children = (
+				B5455B0B2CA67E1A004FE7D4 /* LoginView.swift */,
+			);
+			path = LoginView;
+			sourceTree = "<group>";
+		};
+		3623813F2CB6D8B100109A3E /* CartView */ = {
+			isa = PBXGroup;
+			children = (
+				369AE6502CA7F5D0001FC4E8 /* CartView.swift */,
+			);
+			path = CartView;
+			sourceTree = "<group>";
+		};
+		362381402CB6D8CC00109A3E /* FavoriteView */ = {
+			isa = PBXGroup;
+			children = (
+				369AE64B2CA7F48B001FC4E8 /* FavouriteView.swift */,
+			);
+			path = FavoriteView;
+			sourceTree = "<group>";
+		};
+		362381412CB6D8DA00109A3E /* ProfileView */ = {
+			isa = PBXGroup;
+			children = (
+				369AE6522CA7F5EB001FC4E8 /* ProfileView.swift */,
+			);
+			path = ProfileView;
+			sourceTree = "<group>";
+		};
+		362381422CB6D8E700109A3E /* MapView */ = {
+			isa = PBXGroup;
+			children = (
+				369AE6542CA81126001FC4E8 /* MapView.swift */,
+			);
+			path = MapView;
+			sourceTree = "<group>";
+		};
 		369AE64A2CA7E6C2001FC4E8 /* TabBar */ = {
 			isa = PBXGroup;
 			children = (
@@ -243,19 +295,15 @@
 		B5455AF42CA662EB004FE7D4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				362381422CB6D8E700109A3E /* MapView */,
+				362381412CB6D8DA00109A3E /* ProfileView */,
+				362381402CB6D8CC00109A3E /* FavoriteView */,
+				3623813F2CB6D8B100109A3E /* CartView */,
+				3623813E2CB6D8A200109A3E /* LoginView */,
+				3623813D2CB6D89B00109A3E /* HomeView */,
 				3607D5C02CA96F4B000888C1 /* OrderStatusView */,
 				369AE64D2CA7F498001FC4E8 /* MenuItemView */,
 				369AE64A2CA7E6C2001FC4E8 /* TabBar */,
-				B5455B0B2CA67E1A004FE7D4 /* LoginView.swift */,
-				369AE6382CA7B8FE001FC4E8 /* HomeView.swift */,
-				369AE63C2CA7B92B001FC4E8 /* CategoriesView.swift */,
-				369AE63E2CA7B9CA001FC4E8 /* AddressAndContactView.swift */,
-				369AE6402CA7BA1E001FC4E8 /* SearchView.swift */,
-				369AE6442CA7C7FD001FC4E8 /* CategoryButtonView.swift */,
-				369AE64B2CA7F48B001FC4E8 /* FavouriteView.swift */,
-				369AE6502CA7F5D0001FC4E8 /* CartView.swift */,
-				369AE6522CA7F5EB001FC4E8 /* ProfileView.swift */,
-				369AE6542CA81126001FC4E8 /* MapView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
