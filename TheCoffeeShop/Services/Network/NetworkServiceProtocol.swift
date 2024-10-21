@@ -8,6 +8,5 @@
 import Foundation
 
 protocol NetworkServiceProtocol {
-    func request<T>(requestInfo: RequestInfo,params: T, result: @escaping (Result<Data?, NetworkServiceError>) -> Void) where T: Encodable
-    func request(requestInfo: RequestInfo, params: [String: Any]?, result: @escaping (Result<Data?, NetworkServiceError>) -> Void)
+    func request<T: Decodable>(requestInfo: RequestInfo, result: @escaping (Result<T, NetworkServiceError>) -> Void)
 }

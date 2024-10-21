@@ -23,43 +23,32 @@ struct NetworkService {
 }
 
 extension NetworkService: NetworkServiceProtocol {
-    func request<T>(requestInfo: RequestInfo, params: T, result: @escaping (Result<Data?, NetworkServiceError>) -> Void) where T : Encodable {
+    func request<T: Decodable>(requestInfo: RequestInfo, result: @escaping (Result<T, NetworkServiceError>) -> Void) {
         guard Reachability.shared.isConnectedToNetwork() else {
             result(.failure(NetworkServiceError.noConnection))
             return
         }
         
         sessionManager.dataTask(with: requestInfo.toURLRequest()) { data, response, error in
-            guard let response = response as? HTTPURLResponse, error == nil else {
+            guard let data = data, let response = response as? HTTPURLResponse, error == nil else {
                 result(.failure(NetworkServiceError.unknownError))
                 return
             }
+            
             let statusCode = APIStatusCode(rawValue: response.statusCode) ?? .unknownError
             if statusCode == .success {
-                result(.success(data))
+                do {
+                    let jsonResponse = try JSONSerialization.jsonObject(with: data)
+                    print("Get data success: \(jsonResponse)")
+                    let decodedData = try JSONDecoder().decode(T.self, from: data)
+                    result(.success(decodedData))
+                } catch {
+                    result(.failure(NetworkServiceError.decodeDataFailed))
+                }
             } else {
                 result(.failure(NetworkServiceError(statusCode: statusCode, data: data)))
             }
-        }
+        }.resume()
     }
-    
-    func request(requestInfo: RequestInfo, params: [String : Any]?, result: @escaping (Result<Data?, NetworkServiceError>) -> Void) {
-        guard Reachability.shared.isConnectedToNetwork() else {
-            result(.failure(NetworkServiceError.noConnection))
-            return
-        }
-        
-        sessionManager.dataTask(with: requestInfo.toURLRequest()) { data, response, error in
-            guard let response = response as? HTTPURLResponse, error == nil else {
-                result(.failure(NetworkServiceError.unknownError))
-                return
-            }
-            let statusCode = APIStatusCode(rawValue: response.statusCode) ?? .unknownError
-            if statusCode == .success {
-                result(.success(data))
-            } else {
-                result(.failure(NetworkServiceError(statusCode: statusCode, data: data)))
-            }
-        }
-    }
+
 }

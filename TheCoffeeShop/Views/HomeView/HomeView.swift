@@ -7,51 +7,76 @@
 
 import SwiftUI
 
-let menuItems = [
-    MenuItem(name: "Cappuccino", price: "3$", imageName: "cappuccino"),
-    MenuItem(name: "Espresso", price: "2$", imageName: "espresso"),
-    MenuItem(name: "Americano", price: "2.55$", imageName: "americano"),
-    MenuItem(name: "Latte", price: "4$", imageName: "latte")
-]
-
 struct HomeView: View {
+    @EnvironmentObject var cartEnvironment: CartEnvironment
+    @EnvironmentObject var locationEnvironment: LocationEnvironment
+    @EnvironmentObject var userEnvironment: UserEnvironment
+    @StateObject var viewModel: HomeViewModel = HomeViewModel()
     
     var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                // Address and contact info
-                NavigationLink(
-                    destination: MapView()
-                ) {
-                    AddressAndContactView()
-                        .background()
-                        .padding(.horizontal, 10)
+        VStack(spacing: 20) {
+            NavigationLink(
+                destination: MapView()
+            ) {
+                HStack {
+                    Image(systemName: "mappin.and.ellipse")
+                    Text(locationEnvironment.address)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                    Spacer()
+                    Image(systemName: "phone.fill")
                 }
-                
-                // Search Bar
-                SearchView()
-                    .padding(.horizontal, 10)
-                
-                // Categories
-                CategoriesView()
-                    .scaledToFit()
-                    .padding(.horizontal, 10)
-                
-                // Menu Items
-                ScrollView {
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 0) {
-                        ForEach(menuItems, id: \.id) { item in
-                            GridItemView(menuItem: item)
+                .foregroundStyle(.black)
+            }
+            .padding(.horizontal, 25)
+            
+            // Search Bar
+            SearchView(searchText: $viewModel.productSearchText)
+                .padding(.horizontal, 10)
+            
+            // Categories
+            if !viewModel.categories.isEmpty {
+                CategoriesView(
+                    categories: viewModel.categories,
+                    selectedCategories: $viewModel.selectedCategories
+                ) { category in
+                    viewModel.toggleCategory(category: category)
+                }
+                .scaledToFit()
+                .padding(.horizontal, 10)
+            }
+            
+            // Menu Items
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 0) {
+                    ForEach($viewModel.filteredProducts, id: \.id) { item in
+                        NavigationLink {
+                            ItemDetailView(product: item, toggleFavourite: { product in
+                                viewModel.toggleFavourite(product: product)
+                            }, addToCart: { product in
+                                viewModel.addToCart(product: product)
+                            })
+                        } label: {
+                            GridItemView(product: item, toggleFavourite: { product in
+                                viewModel.toggleFavourite(product: product)
+                            }, addToCart: { product in
+                                viewModel.addToCart(product: product)
+                            })
                         }
                     }
                 }
-                .padding(.horizontal, 20)
             }
-            .ignoresSafeArea(edges: .bottom)
+            .padding(.horizontal, 20)
+        }
+        .onAppear {
+            viewModel.fetchProducts(userEnvironment)
         }
     }
 }
 
 #Preview {
     HomeView()
+        .environmentObject(UserEnvironment())
+        .environmentObject(LocationEnvironment())
+        .environmentObject(CartEnvironment())
 }

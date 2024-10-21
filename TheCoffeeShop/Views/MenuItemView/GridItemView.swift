@@ -8,31 +8,39 @@
 import SwiftUI
 
 struct GridItemView: View {
-    let menuItem: MenuItem
-    let sizes: [String] = ["S", "M", "L"]
-    let price: String = "2$"
-    @State private var selectedSize: String = "M"
-    @State var isLiked = false
+    @Binding var product: Product
+    let toggleFavourite: (Product) -> Void
+    let addToCart: (Product) -> Void
+    @State var selectedSize: Size?
+    @State var price: Double = 0
 
     var body: some View {
         VStack {
             ZStack(alignment: .topTrailing) {
-                Image(systemName: "leaf.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: 150)
-                    .cornerRadius(10)
-                    .clipped()
-                
-                Button(action: {
-                    isLiked.toggle()
-                }) {
-                    Image(systemName: isLiked ? "heart.fill" : "heart")
+                AsyncCachedImage(url: URL(string: product.image)) { image in
+                    image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .foregroundColor(isLiked ? .red : .gray)
-                        .frame(width: 24, height: 24)
-                        .padding(8)
+                        .cornerRadius(10)
+                        .clipped()
+                } placeholder: {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                }
+                .frame(height: 150)
+                
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        toggleFavourite(product)
+                    }) {
+                        Image(systemName: product.isFavourite ? "heart.fill" : "heart")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .foregroundColor(product.isFavourite ? .red : .gray)
+                            .frame(width: 24, height: 24)
+                            .padding(8)
+                    }
                 }
             }
             .padding(.init(top: 5, leading: 5, bottom: 0, trailing: 5))
@@ -40,35 +48,44 @@ struct GridItemView: View {
             VStack(alignment: .leading) {
                 HStack {
                     VStack(alignment: .leading, spacing: 5) {
-                        Text(menuItem.name)
+                        Text(product.name)
                             .font(.headline)
                             .foregroundColor(.black)
-                        HStack {
-                            ForEach(sizes, id: \.self) { size in
-                                Button(action: {
-                                    selectedSize = size
-                                }) {
-                                    Text(size)
-                                        .font(.system(size: 6))
-                                        .padding(5)
-                                        .background(selectedSize == size ? Color.brown : Color.gray.opacity(0.2))
-                                        .foregroundColor(selectedSize == size ? .white : .black)
-                                        .cornerRadius(5)
+                            .lineLimit(1)
+                            .padding(.horizontal, 10)
+                        
+                        let sizes = product.sizes
+                        if !sizes.isEmpty {
+                            HStack {
+                                ForEach(sizes, id: \.self) { size in
+                                    if !size.displayText.isEmpty {
+                                        Button(action: {
+                                            selectedSize = size
+                                        }) {
+                                            Text(size.displayText)
+                                                .font(.system(size: 6))
+                                                .padding(5)
+                                                .background(selectedSize == size ? Color.brown : Color.gray.opacity(0.2))
+                                                .foregroundColor(selectedSize == size ? .white : .black)
+                                                .cornerRadius(5)
+                                        }
+                                        .frame(width: 24, height: 10)
+                                    }
                                 }
-                                .frame(width: 24, height: 10)
                             }
                         }
                     }
                     Spacer()
                 }
                 HStack {
-                    Text(price)
+                    Text(String(format: "%.2f$", product.price))
                         .font(.subheadline)
                         .foregroundColor(.black)
                     
                     Spacer()
                     
                     Button(action: {
+                        addToCart(product)
                     }) {
                         Text("+")
                             .frame(width: 40, height: 40)
@@ -78,6 +95,7 @@ struct GridItemView: View {
                     }
                 }
                 .padding(.bottom, 5)
+                .padding(.horizontal, 10)
             }
         }
         .background(Color.white)
@@ -88,5 +106,25 @@ struct GridItemView: View {
 }
 
 #Preview {
-    GridItemView(menuItem: MenuItem(name: "Cappuccino", price: "3$", imageName: "cappuccino"))
+    GridItemView(
+        product: .constant(
+            Product(
+                id: UUID(),
+                name: "Coffee",
+                image: "",
+                price: 5.45,
+                sizes: [],
+                productDescription: "A great coffee",
+                rating: 5,
+                toppings: [],
+                isFavourite: false,
+                category: ProductCategory(
+                    imageUrl: "https://picsum.photos/id/12/2500/1667",
+                    title: "Coffee")
+            )
+        ),
+        toggleFavourite: {_ in },
+        addToCart: {_ in },
+        selectedSize: nil
+    )
 }

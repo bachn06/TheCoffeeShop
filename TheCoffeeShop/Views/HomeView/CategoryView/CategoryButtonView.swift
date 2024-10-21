@@ -11,17 +11,21 @@ struct CategoryButtonView: View {
     let title: String
     let icon: String
     var action: () -> Void
-    @State var isSelected: Bool = false
+    var isSelected: Bool
 
     var body: some View {
         Button(action: {
             action()
-            isSelected.toggle()
         }) {
             HStack {
-                Image(systemName: icon)
-                    .resizable()
-                    .frame(width: 16, height: 16)
+                AsyncCachedImage(url: URL(string: icon)) { image in
+                    image
+                        .resizable()
+                        .frame(width: 16, height: 16)
+                } placeholder: {
+                    ProgressView()
+                }
+       
                 Text(title)
                     .font(.system(size: 12, weight: .medium))
                     .fixedSize()
@@ -51,5 +55,5 @@ struct CategoryButtonView: View {
 
 
 #Preview {
-    CategoryButtonView(title: "ALCOHOL FREE", icon: "leaf.fill", action: {})
+    CategoryButtonView(title: "ALCOHOL FREE", icon: "leaf.fill", action: {}, isSelected: false)
 }

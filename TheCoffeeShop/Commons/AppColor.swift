@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 extension Color {
-    init(hex string: String) {
+    init(hex string: String, opacity: Double = 1.0) {
         var string: String = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         if string.hasPrefix("#") {
             _ = string.removeFirst()
@@ -38,7 +38,7 @@ extension Color {
 
             let gray = Double(g) / 255.0
 
-            self.init(.sRGB, red: gray, green: gray, blue: gray, opacity: 1)
+            self.init(.sRGB, red: gray, green: gray, blue: gray, opacity: opacity)
 
         } else if string.count == 4 {
             let mask = 0x00FF
@@ -61,7 +61,7 @@ extension Color {
             let green = Double(g) / 255.0
             let blue = Double(b) / 255.0
 
-            self.init(.sRGB, red: red, green: green, blue: blue, opacity: 1)
+            self.init(.sRGB, red: red, green: green, blue: blue, opacity: opacity)
 
         } else if string.count == 8 {
             let mask = 0x000000FF

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SearchView: View {
-    @State var searchText = ""
+    @Binding var searchText: String
     
     var body: some View {
         HStack {
@@ -33,5 +33,5 @@ struct SearchView: View {
 }
 
 #Preview {
-    SearchView()
+    SearchView(searchText: .constant(""))
 }

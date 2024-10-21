@@ -8,30 +8,20 @@
 import SwiftUI
 
 struct CategoriesView: View {
-    @State private var searchText: String = ""
-
-    let categories = [
-        ("COFFEE", "cup.and.saucer.fill"),
-        ("DESSERTS", "birthday.cake.fill"),
-        ("ALCOHOL", "wineglass.fill"),
-        ("ALCOHOL FREE", "leaf.fill"),
-        ("BREAKFAST", "leaf.fill")
-    ]
+    let categories: [ProductCategory]
+    @Binding var selectedCategories: Set<ProductCategory>
+    let action: (ProductCategory) -> Void
 
     var body: some View {
-        VStack(spacing: 30) {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Categories")
-                    .font(.headline)
-                    .padding(.horizontal)
-                
-                ScrollView {
-                    GeometryReader { geometry in
-                        self.generateContent(in: geometry)
-                    }
-                    .padding(.horizontal, 5)
-                }
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Categories")
+                .font(.headline)
+                .padding(.horizontal)
+            
+            GeometryReader { geometry in
+                self.generateContent(in: geometry)
             }
+            .padding(.horizontal, 5)
         }
     }
     
@@ -40,10 +30,15 @@ struct CategoriesView: View {
         var height = CGFloat.zero
 
         return ZStack(alignment: .topLeading) {
-            ForEach(self.categories, id: \.0) { category in
-                CategoryButtonView(title: category.0, icon: category.1, action: {
-                    
-                })
+            ForEach(categories, id: \.self) { category in
+                CategoryButtonView(
+                    title: category.title,
+                    icon: category.imageUrl,
+                    action: {
+                        action(category)
+                    },
+                    isSelected: selectedCategories.contains(category)
+                )
                 .padding([.horizontal, .vertical], 5)
                 .alignmentGuide(.leading, computeValue: { d in
                     if (abs(width - d.width) > g.size.width)
@@ -77,6 +72,6 @@ struct CategoriesView: View {
 
 struct CategoriesView_Previews: PreviewProvider {
     static var previews: some View {
-        CategoriesView()
+        CategoriesView(categories: [], selectedCategories: .constant([]), action: {_ in})
     }
 }

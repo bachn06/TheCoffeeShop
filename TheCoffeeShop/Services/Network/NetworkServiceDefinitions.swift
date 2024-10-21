@@ -71,6 +71,7 @@ public struct RequestInfo {
     var urlInfo: URL
     let httpMethod: HTTPMethod
     var headers: HTTPHeader?
+    var body: Data?
     
     init(urlInfo: URL, httpMethod: HTTPMethod, headers: HTTPHeader? = nil) {
         self.urlInfo = urlInfo
@@ -78,23 +79,12 @@ public struct RequestInfo {
         self.headers = headers
     }
     
-    mutating func appendUrlItem(name: String, value: String?) {
-        urlInfo.appendQueryItem(name: name, value: value)
-    }
-    
-    mutating func appendHeaderItem(items: HTTPHeader) {
-        if headers == nil {
-            headers = [:]
-        }
-        for (key, value) in items {
-            headers?[key] = value
-        }
-    }
-    
     func toURLRequest() -> URLRequest {
         var urlRequest = URLRequest(url: urlInfo)
         urlRequest.httpMethod = httpMethod.rawValue
         urlRequest.allHTTPHeaderFields = headers
+        urlRequest.httpBody = body
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
         return urlRequest
     }
 }

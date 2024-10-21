@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct LoginView: View {
-    @State var userName: String = ""
-    @State var phoneNumber: String = ""
+    @EnvironmentObject var router: Router
+    @EnvironmentObject var userEnvironment: UserEnvironment
+    @StateObject var viewModel = LoginViewModel()
     
     var body: some View {
         ZStack {
@@ -58,7 +59,7 @@ struct LoginView: View {
                             Spacer()
                         }
                         .padding(.horizontal, 10)
-                        TextField("", text: $userName)
+                        TextField("", text: $viewModel.userName)
                             .frame(height: 60)
                             .padding(.init(top: 0, leading: 10, bottom: 0, trailing: 10))
                             .overlay(
@@ -75,7 +76,7 @@ struct LoginView: View {
                             Spacer()
                         }
                         .padding(.horizontal, 10)
-                        TextField("", text: $phoneNumber)
+                        TextField("", text: $viewModel.phoneNumber)
                             .frame(height: 60)
                             .padding(.init(top: 0, leading: 10, bottom: 0, trailing: 10))
                             .overlay(
@@ -90,7 +91,7 @@ struct LoginView: View {
                 
                 VStack {
                     Button(action: {
-                        // Handle login action here
+                        viewModel.login(router: router, userManager: userEnvironment)
                     }) {
                         Text("Login")
                             .font(.headline)
@@ -107,9 +108,12 @@ struct LoginView: View {
                 Spacer()
             }
         }
+        .navigationBarBackButtonHidden()
     }
 }
 
 #Preview {
     LoginView()
+        .environmentObject(Router())
+        .environmentObject(UserEnvironment())
 }

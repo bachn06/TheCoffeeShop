@@ -8,11 +8,18 @@
 import Foundation
 
 protocol APIServiceProtocol {
-    
+    func login(userName: String, phoneNumber: String, completion: @escaping (Result<User, NetworkServiceError>) -> Void)
+    func fetchProducts(completion: @escaping (Result<[Product], NetworkServiceError>) -> Void)
+    func fetchFavouriteProducts(completion: @escaping (Result<Product, NetworkServiceError>) -> Void)
+    func updateProduct(product: Product, completion: @escaping (Result<Product, NetworkServiceError>) -> Void)
+    func fetchCart(completion: @escaping (Result<Cart, NetworkServiceError>) -> Void)
+    func updateProfile(user: User, completion: @escaping(Result<User, NetworkServiceError>) -> Void)
 }
 
 class APIService {
     public let networkService: NetworkServiceProtocol
+    
+    static let shared: APIService = APIService()
     
     init(networkService: NetworkServiceProtocol = NetworkService()) {
         self.networkService = networkService
@@ -56,26 +63,32 @@ extension APIService {
             }
         }
     }
-    
-    func createURLString(base: String, path: String) -> String {
-        let trimmedBase = base.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
-        let trimmedPath = path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
-        return "\(trimmedBase)/\(trimmedPath)"
+}
+
+extension APIService: APIServiceProtocol {
+    func login(userName: String, phoneNumber: String, completion: @escaping (Result<User, NetworkServiceError>) -> Void) {
+        
     }
     
-    func addParams(to urlString: String, params: [String: Any]) -> String {
-        guard var urlComponents = URLComponents(string: urlString) else {
-            return urlString
-        }
-        let queryItems: [URLQueryItem] = params.map { key, value in
-            let stringValue = String(describing: value)
-            return URLQueryItem(name: key, value: stringValue)
-        }
-        if urlComponents.queryItems == nil {
-            urlComponents.queryItems = queryItems
-        } else {
-            urlComponents.queryItems?.append(contentsOf: queryItems)
-        }
-        return urlComponents.url?.absoluteString ?? urlString
+    func fetchProducts(completion: @escaping (Result<[Product], NetworkServiceError>) -> Void) {
+        guard let url = URL(string: "https://run.mocky.io/v3/fbc3afc6-3229-46b5-8571-1dbcfebac1c1") else { return }
+        let requestInfo = RequestInfo(urlInfo: url, httpMethod: .get)
+        networkService.request(requestInfo: requestInfo, result: completion)
+    }
+    
+    func fetchFavouriteProducts(completion: @escaping (Result<Product, NetworkServiceError>) -> Void) {
+        
+    }
+    
+    func updateProduct(product: Product, completion: @escaping (Result<Product, NetworkServiceError>) -> Void) {
+        
+    }
+    
+    func fetchCart(completion: @escaping (Result<Cart, NetworkServiceError>) -> Void) {
+        
+    }
+    
+    func updateProfile(user: User, completion: @escaping (Result<User, NetworkServiceError>) -> Void) {
+        
     }
 }

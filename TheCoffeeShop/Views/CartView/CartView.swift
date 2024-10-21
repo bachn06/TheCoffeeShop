@@ -25,13 +25,13 @@ struct CartView: View {
                     .bold()
                     .padding(.horizontal)
                 
-                ScrollView {
-                    ForEach(menuItems, id: \.id) { item in
-                        ListItemView(showQuantityOption: true, showFavouriteButton: false)
-                    }
-                }
-                .frame(maxHeight: geometry.size.height / 1.5)
-                
+//                ScrollView {
+//                    ForEach(menuItems, id: \.id) { item in
+//                        ListItemView(showQuantityOption: true, showFavouriteButton: false)
+//                    }
+//                }
+//                .frame(maxHeight: geometry.size.height / 1.5)
+//                
                 HStack {
                     Spacer()
                     Text("Total: 14$")
