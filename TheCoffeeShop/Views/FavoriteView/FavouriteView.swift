@@ -8,22 +8,33 @@
 import SwiftUI
 
 struct FavouriteView: View {
+    @EnvironmentObject var cartEnvironment: CartEnvironment
+    @EnvironmentObject var userEnvironment: UserEnvironment
+    @StateObject var viewModel: FavouriteViewModel = FavouriteViewModel()
+    
     var body: some View {
         ZStack {
             VStack(spacing: 20) {
-//                SearchView(searchText: .constant(""))
-//                    .padding(.horizontal, 10)
-//                ScrollView {
-//                    LazyVGrid(columns: [GridItem(.flexible())], spacing: 10) {
-//                        ForEach(menuItems, id: \.id) { item in
-//                            ListItemView(showQuantityOption: false)
-//                        }
-//                    }
-//                }
-//                .padding(.horizontal, 20)
+                SearchView(searchText: $viewModel.productSearchText)
+                    .padding(.horizontal, 10)
+                ScrollView {
+                    LazyVGrid(columns: [GridItem(.flexible())], spacing: 10) {
+                        ForEach($viewModel.filteredProducts, id: \.id) { item in
+                            ListItemView(product: item, toggleFavourite: { product in
+                                
+                            }, addToCart: { product in
+                                
+                            }, showQuantityOption: false)
+                        }
+                    }
+                }
+                .padding(.horizontal, 20)
             }
         }
         .edgesIgnoringSafeArea(.bottom)
+        .onAppear {
+            viewModel.fetchFavouriteProduct(userEnvironment)
+        }
     }
 }
 

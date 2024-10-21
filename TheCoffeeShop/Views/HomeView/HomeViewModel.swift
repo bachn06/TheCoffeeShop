@@ -52,7 +52,7 @@ final class HomeViewModel: ObservableObject {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let products):
-                    self.handleProductResponse(products)
+                    self.handleProductResponse(products, userEnvironment)
                 case .failure(let failure):
                     break
                 }
@@ -60,8 +60,9 @@ final class HomeViewModel: ObservableObject {
         }
     }
     
-    func handleProductResponse(_ products: [Product]) {
+    func handleProductResponse(_ products: [Product], _ userEnvironment: UserEnvironment) {
         self.products = products
+        userEnvironment.products = products
         getProductCategories(products)
         filterProducts()
     }

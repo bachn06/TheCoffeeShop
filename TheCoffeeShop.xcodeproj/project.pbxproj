@@ -33,6 +33,7 @@
 		36C876062CC56319002DC791 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C876052CC56319002DC791 /* Product.swift */; };
 		36C876092CC6975B002DC791 /* CartEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C876082CC6975B002DC791 /* CartEnvironment.swift */; };
 		36C8760B2CC6978B002DC791 /* Cart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C8760A2CC6978B002DC791 /* Cart.swift */; };
+		36C8760D2CC6BF9D002DC791 /* FavouriteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C8760C2CC6BF9D002DC791 /* FavouriteViewModel.swift */; };
 		36D9A1D52CAB048A003F6AF2 /* ItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D9A1D42CAB048A003F6AF2 /* ItemDetailView.swift */; };
 		B5455AC82CA6622C004FE7D4 /* TheCoffeeShopApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5455AC72CA6622C004FE7D4 /* TheCoffeeShopApp.swift */; };
 		B5455ACC2CA6622D004FE7D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5455ACB2CA6622D004FE7D4 /* Assets.xcassets */; };
@@ -97,6 +98,7 @@
 		36C876052CC56319002DC791 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		36C876082CC6975B002DC791 /* CartEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartEnvironment.swift; sourceTree = "<group>"; };
 		36C8760A2CC6978B002DC791 /* Cart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cart.swift; sourceTree = "<group>"; };
+		36C8760C2CC6BF9D002DC791 /* FavouriteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouriteViewModel.swift; sourceTree = "<group>"; };
 		36D9A1D42CAB048A003F6AF2 /* ItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailView.swift; sourceTree = "<group>"; };
 		B5455AC42CA6622C004FE7D4 /* TheCoffeeShop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheCoffeeShop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5455AC72CA6622C004FE7D4 /* TheCoffeeShopApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheCoffeeShopApp.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				369AE64B2CA7F48B001FC4E8 /* FavouriteView.swift */,
+				36C8760C2CC6BF9D002DC791 /* FavouriteViewModel.swift */,
 			);
 			path = FavoriteView;
 			sourceTree = "<group>";
@@ -549,6 +552,7 @@
 				B5455B0C2CA67E1A004FE7D4 /* LoginView.swift in Sources */,
 				369AE64C2CA7F48B001FC4E8 /* FavouriteView.swift in Sources */,
 				36C875F92CC546B6002DC791 /* ProfileViewModel.swift in Sources */,
+				36C8760D2CC6BF9D002DC791 /* FavouriteViewModel.swift in Sources */,
 				B5455AF82CA663F6004FE7D4 /* APIService.swift in Sources */,
 				369AE6432CA7C722001FC4E8 /* GridItemView.swift in Sources */,
 				B5455AF62CA66342004FE7D4 /* User.swift in Sources */,

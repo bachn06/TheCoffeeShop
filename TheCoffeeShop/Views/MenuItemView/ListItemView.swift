@@ -8,34 +8,41 @@
 import SwiftUI
 
 struct ListItemView: View {
-    @State private var quantity: Int = 0
-    @State var isLiked = false
+    @Binding var product: Product
+    let toggleFavourite: (Product) -> Void
+    let addToCart: (Product) -> Void
     var showQuantityOption = true
     var showFavouriteButton = true
     
     var body: some View {
         HStack {
-            Image(systemName: "leaf.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 94, height: 63)
-                .cornerRadius(14)
+            AsyncCachedImage(url: URL(string: product.image), content: { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 94, height: 63)
+                    .cornerRadius(14)
+            }) {
+                ProgressView()
+                    .frame(width: 94, height: 63)
+            }
 
             VStack(alignment: .leading, spacing: 5) {
-                Text("Bun cha")
+                Text(product.name)
                     .font(.headline)
                     .foregroundColor(.black)
-                Text("2$")
+                    .lineLimit(2)
+                Text(String(format: "%.2f$", product.price))
                     .font(.subheadline)
                     .foregroundColor(.black)
                 if showFavouriteButton {
                     Button(action: {
-                        isLiked.toggle()
+                        toggleFavourite(product)
                     }) {
-                        Image(systemName: isLiked ? "heart.fill" : "heart")
+                        Image(systemName: product.isFavourite ? "heart.fill" : "heart")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .foregroundColor(isLiked ? .red : .gray)
+                            .foregroundColor(product.isFavourite ? .red : .gray)
                             .frame(width: 24, height: 24)
                             .padding(8)
                     }
@@ -48,16 +55,13 @@ struct ListItemView: View {
                 HStack {
                     Image(systemName: "star.fill")
                         .foregroundColor(.gray)
-                    Text("\(4.8, specifier: "%.1f")")
+                    Text("\(product.rating, specifier: "%.1f")")
                         .foregroundColor(.gray)
                 }
                 
                 if showQuantityOption {
                     HStack {
                         Button(action: {
-                            if quantity > 0 {
-                                quantity -= 1
-                            }
                         }) {
                             Text("-")
                                 .frame(width: 22, height: 22)
@@ -66,11 +70,10 @@ struct ListItemView: View {
                                 .clipShape(Circle())
                         }
                         
-                        Text("\(quantity)")
+                        Text("1")
                             .frame(width: 30, height: 30)
                         
                         Button(action: {
-                            quantity += 1
                         }) {
                             Text("+")
                                 .frame(width: 22, height: 22)
@@ -81,6 +84,7 @@ struct ListItemView: View {
                     }
                 } else {
                     Button(action: {
+                        addToCart(product)
                     }) {
                         Text("+")
                             .frame(width: 40, height: 40)
@@ -100,5 +104,22 @@ struct ListItemView: View {
 }
 
 #Preview {
-    ListItemView()
+    ListItemView(product: .constant(
+        Product(
+            id: UUID(),
+            name: "Coffee",
+            image: "",
+            price: 5.45,
+            sizes: [.small, .medium],
+            productDescription: "A great coffee",
+            rating: 5,
+            toppings: [],
+            isFavourite: false,
+            category: ProductCategory(
+                imageUrl: "https://picsum.photos/id/12/2500/1667",
+                title: "Coffee")
+        )
+    ),
+    toggleFavourite: {_ in },
+    addToCart: {_ in })
 }

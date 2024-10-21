@@ -41,6 +41,9 @@ enum TabbarItems: Int, CaseIterable {
 }
 
 struct TabBarView: View {
+    @EnvironmentObject var locationEnvironment: LocationEnvironment
+    @EnvironmentObject var userEnvironment: UserEnvironment
+    @EnvironmentObject var cartEnvironment: CartEnvironment
     @StateObject var viewModel: TabBarViewModel = TabBarViewModel()
     @State var selectedTab: TabbarItems = .home
 
@@ -117,4 +120,7 @@ struct TabBarView: View {
 
 #Preview {
     TabBarView()
+        .environmentObject(UserEnvironment())
+        .environmentObject(LocationEnvironment())
+        .environmentObject(CartEnvironment())
 }
