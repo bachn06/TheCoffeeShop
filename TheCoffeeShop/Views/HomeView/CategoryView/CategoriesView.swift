@@ -19,7 +19,9 @@ struct CategoriesView: View {
                 .padding(.horizontal)
             
             GeometryReader { geometry in
-                self.generateContent(in: geometry)
+                ScrollView(showsIndicators: false) {
+                    self.generateContent(in: geometry)
+                }
             }
             .padding(.horizontal, 5)
         }

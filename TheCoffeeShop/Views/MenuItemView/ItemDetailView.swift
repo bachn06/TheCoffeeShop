@@ -15,6 +15,8 @@ struct ItemDetailView: View {
     let toggleFavourite: (Product) -> Void
     let addToCart: (Product) -> Void
     
+    @State private var contentSize: CGSize = .zero
+    
     var body: some View {
         ZStack {
             ZStack(alignment: .topLeading) {
@@ -24,10 +26,10 @@ struct ItemDetailView: View {
                             .resizable()
                             .foregroundStyle(.red)
                             .aspectRatio(contentMode: .fill)
-                            .frame(width: geometry.size.width, height: geometry.size.height / 2)
+                            .frame(width: geometry.size.width, height: geometry.size.height / 1.8)
                     } placeholder: {
                         ProgressView()
-                            .frame(maxWidth: .infinity, maxHeight: geometry.size.height / 2)
+                            .frame(maxWidth: .infinity, maxHeight: geometry.size.height / 1.8)
                     }
                 }
                 .ignoresSafeArea()
@@ -53,13 +55,12 @@ struct ItemDetailView: View {
                             .aspectRatio(contentMode: .fill)
                             .foregroundColor(product.isFavourite ? .red : .gray)
                             .frame(width: 24, height: 24)
-                            .padding(10)
+                            .padding(.trailing, 10)
                     }
                 }
-                .padding(.horizontal, 20)
+                .padding(.horizontal)
             }
 
-            // Do stub here
             VStack(alignment: .leading) {
                 Spacer()
                 HStack {
@@ -90,7 +91,7 @@ struct ItemDetailView: View {
                 }
                 .padding(.horizontal, 20)
                 
-                VStack {
+                VStack(alignment: .leading) {
                     let sizes = product.sizes
                     if !sizes.isEmpty {
                         VStack(alignment: .leading, spacing: 15) {
@@ -105,7 +106,7 @@ struct ItemDetailView: View {
                                     }) {
                                         Text("\(size)")
                                             .font(.subheadline)
-                                            .frame(minWidth: 0, maxWidth: .infinity)
+                                            .frame(width: 90)
                                             .padding()
                                             .background(selectedSize == size ? Color(hex: "#846046") : Color.white)
                                             .foregroundStyle(selectedSize == size ? Color.white : Color.black)
@@ -126,7 +127,7 @@ struct ItemDetailView: View {
                         Text("About")
                             .font(.headline)
                         
-                        Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Id ipsum vivamus velit lorem amet.")
+                        Text(product.productDescription)
                             .fixedSize(horizontal: false, vertical: true)
                             .font(.body)
                     }
@@ -155,7 +156,7 @@ struct ItemDetailView: View {
                                                     .clipShape(Circle())
                                             }
                                             
-                                            Text("")
+                                            Text("1")
                                                 .frame(width: 30, height: 30)
                                             
                                             Button(action: {
@@ -174,9 +175,16 @@ struct ItemDetailView: View {
                                     }
                                 }
                                 .padding(5)
+                                .overlay(
+                                    GeometryReader { geo in
+                                        Color.clear.onAppear {
+                                            contentSize = geo.size
+                                        }
+                                    }
+                                )
                             }
+                            .frame(maxHeight: min(contentSize.height, 300))
                         }
-                        .frame(maxHeight: 300)
                     }
                     
                     // Add to Cart Button
@@ -216,12 +224,12 @@ struct ItemDetailView: View {
     ItemDetailView(product: .constant(Product(
         id: UUID(),
         name: "Coffee",
-        image: "",
+        image: "https://picsum.photos/id/12/2500/1667",
         price: 5.45,
         sizes: [.large, .medium, .small],
         productDescription: "A great coffee",
         rating: 4,
-        toppings: ["Banana"],
+        toppings: ["Banana", "Soda", "Object", "Chocolate"],
         isFavourite: false,
         category: ProductCategory(
             imageUrl: "https://picsum.photos/id/12/2500/1667",

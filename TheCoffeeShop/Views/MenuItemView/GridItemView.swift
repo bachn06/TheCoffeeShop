@@ -21,13 +21,17 @@ struct GridItemView: View {
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .cornerRadius(10)
+                        .frame(height: 150)
+                        .frame(maxWidth: .infinity)
                         .clipped()
+                        .cornerRadius(10)
                 } placeholder: {
                     ProgressView()
                         .frame(maxWidth: .infinity)
+                        .frame(height: 150)
+                        .background(Color.gray.opacity(0.3))
+                        .cornerRadius(10)
                 }
-                .frame(height: 150)
                 
                 HStack {
                     Spacer()
@@ -43,7 +47,7 @@ struct GridItemView: View {
                     }
                 }
             }
-            .padding(.init(top: 5, leading: 5, bottom: 0, trailing: 5))
+            .padding(5)
             
             VStack(alignment: .leading) {
                 HStack {
@@ -65,14 +69,15 @@ struct GridItemView: View {
                                             Text(size.displayText)
                                                 .font(.system(size: 6))
                                                 .padding(5)
+                                                .frame(width: 24, height: 12)
                                                 .background(selectedSize == size ? Color.brown : Color.gray.opacity(0.2))
                                                 .foregroundColor(selectedSize == size ? .white : .black)
-                                                .cornerRadius(5)
+                                                .cornerRadius(10)
                                         }
-                                        .frame(width: 24, height: 10)
                                     }
                                 }
                             }
+                            .padding(.leading, 10)
                         }
                     }
                     Spacer()
@@ -100,7 +105,11 @@ struct GridItemView: View {
         }
         .background(Color.white)
         .cornerRadius(10)
-        .shadow(radius: 5)
+        .overlay(content: {
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(lineWidth: 0.5)
+                .foregroundColor(.gray)
+        })
         .padding()
     }
 }
@@ -113,7 +122,7 @@ struct GridItemView: View {
                 name: "Coffee",
                 image: "",
                 price: 5.45,
-                sizes: [],
+                sizes: [.small, .medium],
                 productDescription: "A great coffee",
                 rating: 5,
                 toppings: [],
