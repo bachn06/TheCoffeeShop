@@ -8,7 +8,7 @@
 import Foundation
 
 struct Cart: Codable {
-    var products: [Product]?
+    var cartItems: [CartItem]?
     var paymentMethod: PaymentMethod
 }
 

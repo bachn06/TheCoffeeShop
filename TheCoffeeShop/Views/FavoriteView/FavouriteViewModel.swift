@@ -39,4 +39,13 @@ final class FavouriteViewModel: ObservableObject {
         products = userEnvironment.products.filter({ $0.isFavourite })
         filterProducts()
     }
+    
+    func toggleFavourite(_ product: Product) {
+        products.removeAll(where: { $0.id == product.id })
+        filterProducts()
+    }
+    
+    func addToCart(_ product: Product) {
+        
+    }
 }

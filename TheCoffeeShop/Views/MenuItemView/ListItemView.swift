@@ -46,6 +46,8 @@ struct ListItemView: View {
                             .frame(width: 24, height: 24)
                             .padding(8)
                     }
+                } else {
+                    Spacer()
                 }
             }
 

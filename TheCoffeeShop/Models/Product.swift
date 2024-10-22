@@ -57,4 +57,15 @@ enum PaymentMethod: String, Codable {
             "Cash"
         }
     }
+    
+    var image: String {
+        switch self {
+        case .applePay:
+            "applepay"
+        case .visaOrMastercard:
+            "creditcard"
+        case .cash:
+            "cash"
+        }
+    }
 }

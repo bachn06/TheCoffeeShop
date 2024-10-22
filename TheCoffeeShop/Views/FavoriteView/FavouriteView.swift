@@ -21,9 +21,9 @@ struct FavouriteView: View {
                     LazyVGrid(columns: [GridItem(.flexible())], spacing: 10) {
                         ForEach($viewModel.filteredProducts, id: \.id) { item in
                             ListItemView(product: item, toggleFavourite: { product in
-                                
+                                viewModel.toggleFavourite(product)
                             }, addToCart: { product in
-                                
+                                viewModel.addToCart(product)
                             }, showQuantityOption: false)
                         }
                     }
@@ -40,4 +40,6 @@ struct FavouriteView: View {
 
 #Preview {
     FavouriteView()
+        .environmentObject(UserEnvironment())
+        .environmentObject(CartEnvironment())
 }

@@ -14,5 +14,6 @@ final class UserEnvironment: ObservableObject {
     @Published var products: [Product] = []
     @Published var categories: [ProductCategory] = []
     @Published var favouriteProducts: [Product] = []
+    @Published var cartItems: [CartItem] = []
 }
 

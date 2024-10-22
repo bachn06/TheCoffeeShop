@@ -54,13 +54,13 @@ struct HomeView: View {
                             ItemDetailView(product: item, toggleFavourite: { product in
                                 viewModel.toggleFavourite(product: product)
                             }, addToCart: { product in
-                                viewModel.addToCart(product: product)
+                                viewModel.addToCart(product: product, userEnvironment)
                             })
                         } label: {
                             GridItemView(product: item, toggleFavourite: { product in
                                 viewModel.toggleFavourite(product: product)
                             }, addToCart: { product in
-                                viewModel.addToCart(product: product)
+                                viewModel.addToCart(product: product, userEnvironment)
                             })
                         }
                     }

@@ -21,6 +21,7 @@ final class Router: ObservableObject {
     enum Route: Hashable, Identifiable {
         case loginView
         case tabbarView
+        case orderTrackingDetail
         
         var id: UUID {
             UUID()

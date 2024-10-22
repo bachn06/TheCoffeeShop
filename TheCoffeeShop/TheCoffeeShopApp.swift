@@ -24,6 +24,8 @@ struct TheCoffeeShopApp: App {
                             LoginView()
                         case .tabbarView:
                             TabBarView()
+                        case .orderTrackingDetail:
+                            OrderStatusDetailsView()
                         }
                     }
             }

@@ -8,15 +8,19 @@
 import SwiftUI
 
 struct CartView: View {
+    @EnvironmentObject var userEnvironment: UserEnvironment
+    @EnvironmentObject var cartEnvironment: CartEnvironment
+    @StateObject var viewModel: CartViewModel = CartViewModel()
     
     var body: some View {
         GeometryReader { geometry in
             VStack(alignment: .leading) {
                 HStack {
                     Spacer()
-                    Image(systemName: "box.truck.fill")
+                    Image("carbon_delivery")
+                        .resizable()
+                        .frame(width: 40, height: 40)
                         .padding(10)
-                        .foregroundStyle(.brown)
                 }
                 .padding(.horizontal)
                 
@@ -25,24 +29,33 @@ struct CartView: View {
                     .bold()
                     .padding(.horizontal)
                 
-//                ScrollView {
-//                    ForEach(menuItems, id: \.id) { item in
-//                        ListItemView(showQuantityOption: true, showFavouriteButton: false)
-//                    }
-//                }
-//                .frame(maxHeight: geometry.size.height / 1.5)
-//                
+                ScrollView {
+                    ForEach($viewModel.cartItems, id: \.product.id) { item in
+                        ListItemView(
+                            product: item.product,
+                            toggleFavourite: { _ in },
+                            addToCart: { _ in },
+                            showQuantityOption: true,
+                            showFavouriteButton: false
+                        )
+                    }
+                }
+                
                 HStack {
                     Spacer()
-                    Text("Total: 14$")
+                    Text("Total: \(String(format: "%.1f$", viewModel.totalPrice))")
                         .font(.headline)
                         .bold()
                 }
                 .padding()
                 
-                Button(action: {
-                    
-                }) {
+                Spacer()
+                
+                NavigationLink {
+                    CreateOrderView(cartItems: $viewModel.cartItems) {
+                        
+                    }
+                } label: {
                     HStack {
                         Text("Go to Cart")
                             .font(.headline)
@@ -60,10 +73,15 @@ struct CartView: View {
                 }
             }
         }
+        .onAppear(perform: {
+            viewModel.fetchCartItems(userEnvironment)
+        })
         .padding()
     }
 }
 
 #Preview {
     CartView()
+        .environmentObject(UserEnvironment())
+        .environmentObject(CartEnvironment())
 }

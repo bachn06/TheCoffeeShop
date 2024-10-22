@@ -84,8 +84,8 @@ final class HomeViewModel: ObservableObject {
         }
     }
     
-    func addToCart(product: Product) {
-        
+    func addToCart(product: Product, _ userEnvironment: UserEnvironment) {
+        userEnvironment.cartItems.append(CartItem(product: product, price: product.price, quantity: 1, toppings: []))
     }
     
     func toggleFavourite(product: Product) {
