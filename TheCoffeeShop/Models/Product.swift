@@ -40,6 +40,17 @@ enum Size: String, Codable {
             "L"
         }
     }
+    
+    var label: String {
+        switch self {
+        case .small:
+            "Small"
+        case .medium:
+            "Medium"
+        case .large:
+            "Large"
+        }
+    }
 }
 
 enum PaymentMethod: String, Codable {

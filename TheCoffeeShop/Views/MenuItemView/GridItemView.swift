@@ -8,16 +8,14 @@
 import SwiftUI
 
 struct GridItemView: View {
-    @Binding var product: Product
-    let toggleFavourite: (Product) -> Void
-    let addToCart: (Product) -> Void
-    @State var selectedSize: Size?
-    @State var price: Double = 0
-
+    @Binding var cartItem: CartItem
+    let toggleFavourite: (CartItem) -> Void
+    let addToCart: (CartItem) -> Void
+    
     var body: some View {
         VStack {
             ZStack(alignment: .topTrailing) {
-                AsyncCachedImage(url: URL(string: product.image)) { image in
+                AsyncCachedImage(url: URL(string: cartItem.product.image)) { image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -36,12 +34,12 @@ struct GridItemView: View {
                 HStack {
                     Spacer()
                     Button(action: {
-                        toggleFavourite(product)
+                        toggleFavourite(cartItem)
                     }) {
-                        Image(systemName: product.isFavourite ? "heart.fill" : "heart")
+                        Image(systemName: cartItem.product.isFavourite ? "heart.fill" : "heart")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .foregroundColor(product.isFavourite ? .red : .gray)
+                            .foregroundColor(cartItem.product.isFavourite ? .red : .gray)
                             .frame(width: 24, height: 24)
                             .padding(8)
                     }
@@ -52,26 +50,26 @@ struct GridItemView: View {
             VStack(alignment: .leading) {
                 HStack {
                     VStack(alignment: .leading, spacing: 5) {
-                        Text(product.name)
+                        Text(cartItem.product.name)
                             .font(.headline)
                             .foregroundColor(.black)
                             .lineLimit(1)
                             .padding(.horizontal, 10)
                         
-                        let sizes = product.sizes
+                        let sizes = cartItem.product.sizes
                         if !sizes.isEmpty {
                             HStack {
                                 ForEach(sizes, id: \.self) { size in
                                     if !size.displayText.isEmpty {
                                         Button(action: {
-                                            selectedSize = size
+                                            cartItem.size = size
                                         }) {
                                             Text(size.displayText)
                                                 .font(.system(size: 6))
                                                 .padding(5)
                                                 .frame(width: 24, height: 12)
-                                                .background(selectedSize == size ? Color.brown : Color.gray.opacity(0.2))
-                                                .foregroundColor(selectedSize == size ? .white : .black)
+                                                .background(cartItem.size == size ? Color.brown : Color.gray.opacity(0.2))
+                                                .foregroundColor(cartItem.size == size ? .white : .black)
                                                 .cornerRadius(10)
                                         }
                                     }
@@ -83,14 +81,14 @@ struct GridItemView: View {
                     Spacer()
                 }
                 HStack {
-                    Text(String(format: "%.2f$", product.price))
+                    Text(String(format: "%.2f$", cartItem.product.price))
                         .font(.subheadline)
                         .foregroundColor(.black)
                     
                     Spacer()
                     
                     Button(action: {
-                        addToCart(product)
+                        addToCart(cartItem)
                     }) {
                         Text("+")
                             .frame(width: 40, height: 40)
@@ -116,8 +114,9 @@ struct GridItemView: View {
 
 #Preview {
     GridItemView(
-        product: .constant(
-            Product(
+        cartItem: .constant(
+            CartItem(
+                product: Product(
                 id: UUID(),
                 name: "Coffee",
                 image: "",
@@ -130,10 +129,14 @@ struct GridItemView: View {
                 category: ProductCategory(
                     imageUrl: "https://picsum.photos/id/12/2500/1667",
                     title: "Coffee")
+                ),
+                size: Size.small,
+                price: 0,
+                quantity: 0,
+                toppings: []
             )
         ),
         toggleFavourite: {_ in },
-        addToCart: {_ in },
-        selectedSize: nil
+        addToCart: {_ in }
     )
 }

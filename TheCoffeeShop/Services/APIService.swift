@@ -71,7 +71,7 @@ extension APIService: APIServiceProtocol {
     }
     
     func fetchProducts(completion: @escaping (Result<[Product], NetworkServiceError>) -> Void) {
-        guard let url = URL(string: "https://run.mocky.io/v3/fbc3afc6-3229-46b5-8571-1dbcfebac1c1") else { return }
+        guard let url = URL(string: "https://run.mocky.io/v3/6b672b60-f13d-4159-b0e0-621cc9bb0e6f") else { return }
         let requestInfo = RequestInfo(urlInfo: url, httpMethod: .get)
         networkService.request(requestInfo: requestInfo, result: completion)
     }

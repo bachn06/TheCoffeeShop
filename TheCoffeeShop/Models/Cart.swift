@@ -14,7 +14,13 @@ struct Cart: Codable {
 
 struct CartItem: Codable {
     var product: Product
+    var size: Size?
     var price: Double
     var quantity: Int
-    var toppings: [String]
+    var toppings: [Topping]
+}
+
+struct Topping: Codable {
+    var topping: String
+    var quantity: Int
 }

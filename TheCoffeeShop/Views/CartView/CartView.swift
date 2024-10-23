@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct CartView: View {
-    @EnvironmentObject var userEnvironment: UserEnvironment
     @EnvironmentObject var cartEnvironment: CartEnvironment
     @StateObject var viewModel: CartViewModel = CartViewModel()
     
@@ -32,9 +31,12 @@ struct CartView: View {
                 ScrollView {
                     ForEach($viewModel.cartItems, id: \.product.id) { item in
                         ListItemView(
-                            product: item.product,
+                            cartItem: item,
                             toggleFavourite: { _ in },
                             addToCart: { _ in },
+                            removeFromCart: { item in
+                                viewModel.removeItemFromCart(item, cartEnvironment)
+                            },
                             showQuantityOption: true,
                             showFavouriteButton: false
                         )
@@ -74,7 +76,7 @@ struct CartView: View {
             }
         }
         .onAppear(perform: {
-            viewModel.fetchCartItems(userEnvironment)
+            viewModel.fetchCartItems(cartEnvironment)
         })
         .padding()
     }
@@ -82,6 +84,5 @@ struct CartView: View {
 
 #Preview {
     CartView()
-        .environmentObject(UserEnvironment())
         .environmentObject(CartEnvironment())
 }

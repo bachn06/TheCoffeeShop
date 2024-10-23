@@ -49,18 +49,14 @@ struct HomeView: View {
             // Menu Items
             ScrollView {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 0) {
-                    ForEach($viewModel.filteredProducts, id: \.id) { item in
+                    ForEach($viewModel.filteredProducts, id: \.product.id) { item in
                         NavigationLink {
-                            ItemDetailView(product: item, toggleFavourite: { product in
-                                viewModel.toggleFavourite(product: product)
-                            }, addToCart: { product in
-                                viewModel.addToCart(product: product, userEnvironment)
-                            })
+                            ItemDetailView(cartItem: item)
                         } label: {
-                            GridItemView(product: item, toggleFavourite: { product in
-                                viewModel.toggleFavourite(product: product)
-                            }, addToCart: { product in
-                                viewModel.addToCart(product: product, userEnvironment)
+                            GridItemView(cartItem: item, toggleFavourite: { cartItem in
+                                viewModel.toggleFavourite(cartItem, userEnvironment)
+                            }, addToCart: { cartItem in
+                                viewModel.addToCart(cartItem, cartEnvironment)
                             })
                         }
                     }

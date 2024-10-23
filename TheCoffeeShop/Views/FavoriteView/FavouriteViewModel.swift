@@ -8,8 +8,8 @@
 import Foundation
 
 final class FavouriteViewModel: ObservableObject {
-    @Published var products: [Product] = []
-    @Published var filteredProducts: [Product] = []
+    @Published var products: [CartItem] = []
+    @Published var filteredProducts: [CartItem] = []
     @Published var productSearchText: String = "" {
         didSet {
             debounceFilter()
@@ -29,23 +29,26 @@ final class FavouriteViewModel: ObservableObject {
     
     func filterProducts() {
         if !productSearchText.isEmpty {
-            filteredProducts = filteredProducts.filter { $0.name.lowercased().contains(productSearchText.lowercased()) }
+            filteredProducts = filteredProducts.filter { $0.product.name.lowercased().contains(productSearchText.lowercased()) }
         } else {
             filteredProducts = products
         }
     }
     
     func fetchFavouriteProduct(_ userEnvironment: UserEnvironment) {
-        products = userEnvironment.products.filter({ $0.isFavourite })
+        products = userEnvironment.favouriteProducts.compactMap({
+            CartItem(product: $0, price: $0.price, quantity: 1, toppings: [])
+        })
         filterProducts()
     }
     
-    func toggleFavourite(_ product: Product) {
-        products.removeAll(where: { $0.id == product.id })
+    func toggleFavourite(_ cartItem: CartItem, _ userEnvironment: UserEnvironment) {
+        products.removeAll(where: { $0.product.id == cartItem.product.id })
+        userEnvironment.toggleFavourite(cartItem.product)
         filterProducts()
     }
     
-    func addToCart(_ product: Product) {
-        
+    func addToCart(_ cartItem: CartItem, _ cartEnvironment: CartEnvironment) {
+        cartEnvironment.addToCart(item: cartItem)
     }
 }

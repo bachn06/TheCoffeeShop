@@ -11,12 +11,12 @@ final class CartViewModel: ObservableObject {
     @Published var cartItems: [CartItem] = []
     @Published var totalPrice: Double = 0
     
-    func fetchCartItems(_ userEnvironment: UserEnvironment) {
-        cartItems = userEnvironment.cartItems
+    func fetchCartItems(_ cartEnvironment: CartEnvironment) {
+        cartItems = cartEnvironment.cartItems
     }
     
-    func removeItemFromCart(_ cartItem: CartItem, _ userEnvironment: UserEnvironment) {
+    func removeItemFromCart(_ cartItem: CartItem, _ cartEnvironment: CartEnvironment) {
         cartItems.removeAll(where: { $0.product.id == cartItem.product.id })
-        userEnvironment.cartItems = cartItems
+        cartEnvironment.cartItems = cartItems
     }
 }

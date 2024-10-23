@@ -46,6 +46,6 @@ final class CartEnvironment: ObservableObject {
 
 extension CartItem {
     static func ==(lhs: CartItem, rhs: CartItem) -> Bool {
-        return lhs.product.id == rhs.product.id && lhs.toppings == rhs.toppings && lhs.price == rhs.price
+        return lhs.product.id == rhs.product.id && lhs.price == rhs.price
     }
 }

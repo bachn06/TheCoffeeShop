@@ -8,20 +8,19 @@
 import SwiftUI
 
 struct ItemDetailView: View {
+    @EnvironmentObject var userEnvironment: UserEnvironment
     @EnvironmentObject var cartEnvironment: CartEnvironment
-    @Environment(\.dismiss) private var dismiss
-    @Binding var product: Product
-    @State var selectedSize: Size?
-    let toggleFavourite: (Product) -> Void
-    let addToCart: (Product) -> Void
-    
+    @EnvironmentObject var router: Router
+    @Binding var cartItem: CartItem
+    @StateObject var viewModel = ItemDetailViewModel()
+
     @State private var contentSize: CGSize = .zero
     
     var body: some View {
         ZStack {
             ZStack(alignment: .topLeading) {
                 GeometryReader { geometry in
-                    AsyncCachedImage(url: URL(string: product.image)) { image in
+                    AsyncCachedImage(url: URL(string: cartItem.product.image)) { image in
                         image
                             .resizable()
                             .foregroundStyle(.red)
@@ -30,13 +29,14 @@ struct ItemDetailView: View {
                     } placeholder: {
                         ProgressView()
                             .frame(maxWidth: .infinity, maxHeight: geometry.size.height / 1.8)
+                            .background(.gray)
                     }
                 }
                 .ignoresSafeArea()
                 
                 HStack {
                     Button(action: {
-                        dismiss()
+                        router.popView()
                     }) {
                         Image(systemName: "chevron.left")
                             .foregroundStyle(.black)
@@ -48,12 +48,12 @@ struct ItemDetailView: View {
                     Spacer()
                     
                     Button(action: {
-                        toggleFavourite(product)
+                        viewModel.toggleFavourite(cartItem.product, userEnvironment)
                     }) {
-                        Image(systemName: product.isFavourite ? "heart.fill" : "heart")
+                        Image(systemName: viewModel.cartItem?.product.isFavourite ?? false ? "heart.fill" : "heart")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .foregroundColor(product.isFavourite ? .red : .gray)
+                            .foregroundColor(cartItem.product.isFavourite ? .red : .gray)
                             .frame(width: 24, height: 24)
                             .padding(.trailing, 10)
                     }
@@ -64,7 +64,7 @@ struct ItemDetailView: View {
             VStack(alignment: .leading) {
                 Spacer()
                 HStack {
-                    Text(product.name)
+                    Text(cartItem.product.name)
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .foregroundStyle(.white)
@@ -73,7 +73,7 @@ struct ItemDetailView: View {
                     HStack {
                         Image(systemName: "star.fill")
                             .foregroundStyle(.white)
-                        Text(String(format: "%.1f", product.rating))
+                        Text(String(format: "%.1f", cartItem.product.rating))
                             .foregroundStyle(.white)
                             .font(.subheadline)
                     }
@@ -92,7 +92,7 @@ struct ItemDetailView: View {
                 .padding(.horizontal, 20)
                 
                 VStack(alignment: .leading) {
-                    let sizes = product.sizes
+                    let sizes = cartItem.product.sizes
                     if !sizes.isEmpty {
                         VStack(alignment: .leading, spacing: 15) {
                             Text("Select Size")
@@ -102,14 +102,14 @@ struct ItemDetailView: View {
                             HStack {
                                 ForEach(sizes, id: \.self) { size in
                                     Button(action: {
-                                        selectedSize = size
+                                        cartItem.size = size
                                     }) {
-                                        Text("\(size)")
+                                        Text(size.label)
                                             .font(.subheadline)
                                             .frame(width: 90)
                                             .padding()
-                                            .background(selectedSize == size ? Color(hex: "#846046") : Color.white)
-                                            .foregroundStyle(selectedSize == size ? Color.white : Color.black)
+                                            .background(cartItem.size == size ? Color(hex: "#846046") : Color.white)
+                                            .foregroundStyle(cartItem.size == size ? Color.white : Color.black)
                                             .cornerRadius(36)
                                             .overlay {
                                                 RoundedRectangle(cornerRadius: 36)
@@ -127,27 +127,27 @@ struct ItemDetailView: View {
                         Text("About")
                             .font(.headline)
                         
-                        Text(product.productDescription)
+                        Text(cartItem.product.productDescription)
                             .fixedSize(horizontal: false, vertical: true)
                             .font(.body)
+                            .lineLimit(6)
                     }
                     .padding(.top)
                     
                     // Add Toppings
-                    let toppings = product.toppings
-                    if !toppings.isEmpty {
+                    if !viewModel.toppings.isEmpty {
                         VStack(alignment: .leading) {
                             Text("Add Topping(1$)")
                                 .font(.headline)
                                 .padding(.top)
                             ScrollView(.vertical, showsIndicators: false) {
-                                ForEach(toppings, id: \.self) { topping in
+                                ForEach(viewModel.toppings, id: \.name) { topping in
                                     VStack {
                                         HStack {
-                                            Text("\(topping)")
+                                            Text("\(topping.name)")
                                             Spacer()
                                             Button(action: {
-                                                
+                                                viewModel.decreaseTopping(topping.name)
                                             }) {
                                                 Text("-")
                                                     .frame(width: 22, height: 22)
@@ -156,11 +156,11 @@ struct ItemDetailView: View {
                                                     .clipShape(Circle())
                                             }
                                             
-                                            Text("1")
+                                            Text("\(topping.quantity)")
                                                 .frame(width: 30, height: 30)
                                             
                                             Button(action: {
-                                                
+                                                viewModel.increseTopping(topping.name)
                                             }) {
                                                 Text("+")
                                                     .frame(width: 22, height: 22)
@@ -183,8 +183,11 @@ struct ItemDetailView: View {
                                     }
                                 )
                             }
-                            .frame(maxHeight: min(contentSize.height, 300))
+                            .frame(maxHeight: min(contentSize.height > 150 ? contentSize.height : 150, 300))
                         }
+                    } else {
+                        Spacer()
+                            .frame(height: 250)
                     }
                     
                     // Add to Cart Button
@@ -197,7 +200,7 @@ struct ItemDetailView: View {
                             .frame(width: 1)
                             .foregroundStyle(.white)
                             .padding()
-                        Text(String(format: "%.2f$", product.price))
+                        Text(String(format: "%.2f$", viewModel.totalPrice))
                             .foregroundStyle(.white)
                             .font(.headline)
                             .padding()
@@ -208,7 +211,8 @@ struct ItemDetailView: View {
                     .padding(.top, 10)
                     .padding(.horizontal, 20)
                     .onTapGesture {
-                        addToCart(product)
+                        viewModel.addToCart(cartItem, cartEnvironment)
+                        router.popView()
                     }
                 }
                 .padding(.horizontal, 20)
@@ -216,25 +220,39 @@ struct ItemDetailView: View {
                 .cornerRadius(30)
             }
         }
+        .onAppear(perform: {
+            viewModel.prepareData(cartItem)
+        })
         .navigationBarBackButtonHidden()
     }
 }
 
 #Preview {
-    ItemDetailView(product: .constant(Product(
-        id: UUID(),
-        name: "Coffee",
-        image: "https://picsum.photos/id/12/2500/1667",
-        price: 5.45,
-        sizes: [.large, .medium, .small],
-        productDescription: "A great coffee",
-        rating: 4,
-        toppings: ["Banana", "Soda", "Object", "Chocolate"],
-        isFavourite: false,
-        category: ProductCategory(
-            imageUrl: "https://picsum.photos/id/12/2500/1667",
-            title: "Coffee")
-    )), toggleFavourite: { _ in }, addToCart: { _ in }
+    ItemDetailView(
+        cartItem: .constant(
+            CartItem(
+                product: Product(
+                id: UUID(),
+                name: "Coffee",
+                image: "",
+                price: 5.45,
+                sizes: [.small, .medium],
+                productDescription: "A great coffee",
+                rating: 5,
+                toppings: [],
+                isFavourite: false,
+                category: ProductCategory(
+                    imageUrl: "https://picsum.photos/id/12/2500/1667",
+                    title: "Coffee")
+                ),
+                size: Size.small,
+                price: 0,
+                quantity: 0,
+                toppings: []
+            )
+        )
     )
+    .environmentObject(Router())
+    .environmentObject(UserEnvironment())
     .environmentObject(CartEnvironment())
 }

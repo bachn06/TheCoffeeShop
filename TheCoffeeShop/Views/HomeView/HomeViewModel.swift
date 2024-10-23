@@ -8,8 +8,8 @@
 import Foundation
 
 final class HomeViewModel: ObservableObject {
-    @Published var products: [Product] = []
-    @Published var filteredProducts: [Product] = []
+    @Published var products: [CartItem] = []
+    @Published var filteredProducts: [CartItem] = []
     @Published var categories: [ProductCategory] = []
     
     @Published var selectedCategories: Set<ProductCategory> = [] {
@@ -39,31 +39,17 @@ final class HomeViewModel: ObservableObject {
         if selectedCategories.isEmpty {
             filteredProducts = products
         } else {
-            filteredProducts = products.filter { selectedCategories.contains($0.category) }
+            filteredProducts = products.filter { selectedCategories.contains($0.product.category) }
         }
         
         if !productSearchText.isEmpty {
-            filteredProducts = filteredProducts.filter { $0.name.lowercased().contains(productSearchText.lowercased()) }
+            filteredProducts = filteredProducts.filter { $0.product.name.lowercased().contains(productSearchText.lowercased()) }
         }
     }
     
     func fetchProducts(_ userEnvironment: UserEnvironment) {
-        APIService.shared.fetchProducts { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let products):
-                    self.handleProductResponse(products, userEnvironment)
-                case .failure(let failure):
-                    break
-                }
-            }
-        }
-    }
-    
-    func handleProductResponse(_ products: [Product], _ userEnvironment: UserEnvironment) {
-        self.products = products
-        userEnvironment.products = products
-        getProductCategories(products)
+        products = userEnvironment.products.compactMap({ CartItem(product: $0, size: $0.sizes.first, price: $0.price, quantity: 1, toppings: []) })
+        getProductCategories(userEnvironment.products)
         filterProducts()
     }
     
@@ -84,11 +70,12 @@ final class HomeViewModel: ObservableObject {
         }
     }
     
-    func addToCart(product: Product, _ userEnvironment: UserEnvironment) {
-        userEnvironment.cartItems.append(CartItem(product: product, price: product.price, quantity: 1, toppings: []))
+    func addToCart(_ cartItem: CartItem, _ cartEnvironment: CartEnvironment) {
+        cartEnvironment.addToCart(item: cartItem)
     }
     
-    func toggleFavourite(product: Product) {
-        
+    func toggleFavourite(_ cartItem: CartItem, _ userEnvironment: UserEnvironment) {
+        userEnvironment.toggleFavourite(cartItem.product)
+        fetchProducts(userEnvironment)
     }
 }

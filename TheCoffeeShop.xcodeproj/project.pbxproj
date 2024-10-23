@@ -55,6 +55,7 @@
 		B5EE04602CC778E900D3E436 /* CartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EE045F2CC778E900D3E436 /* CartViewModel.swift */; };
 		B5EE04622CC7865F00D3E436 /* CreateOrderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EE04612CC7865F00D3E436 /* CreateOrderView.swift */; };
 		B5EE04662CC7A15200D3E436 /* OrderConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EE04652CC7A15200D3E436 /* OrderConfirmationView.swift */; };
+		B5EE046A2CC8CE5E00D3E436 /* ItemDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EE04692CC8CE5E00D3E436 /* ItemDetailViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -126,6 +127,8 @@
 		B5EE045F2CC778E900D3E436 /* CartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewModel.swift; sourceTree = "<group>"; };
 		B5EE04612CC7865F00D3E436 /* CreateOrderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrderView.swift; sourceTree = "<group>"; };
 		B5EE04652CC7A15200D3E436 /* OrderConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderConfirmationView.swift; sourceTree = "<group>"; };
+		B5EE04672CC8CA6800D3E436 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		B5EE04692CC8CE5E00D3E436 /* ItemDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -233,7 +236,6 @@
 			children = (
 				369AE6422CA7C722001FC4E8 /* GridItemView.swift */,
 				369AE64E2CA7F4D6001FC4E8 /* ListItemView.swift */,
-				36D9A1D42CAB048A003F6AF2 /* ItemDetailView.swift */,
 			);
 			path = MenuItemView;
 			sourceTree = "<group>";
@@ -290,6 +292,7 @@
 		B5455AC62CA6622C004FE7D4 /* TheCoffeeShop */ = {
 			isa = PBXGroup;
 			children = (
+				B5EE04672CC8CA6800D3E436 /* Info.plist */,
 				36C875EE2CC4E243002DC791 /* Environment */,
 				B5455B0D2CA67EEA004FE7D4 /* Commons */,
 				B5455B002CA66778004FE7D4 /* Extensions */,
@@ -352,6 +355,7 @@
 		B5455AF42CA662EB004FE7D4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B5EE04682CC8CE4300D3E436 /* ItemDetailView */,
 				36C875F12CC4E47C002DC791 /* SplashView */,
 				362381422CB6D8E700109A3E /* MapView */,
 				362381412CB6D8DA00109A3E /* ProfileView */,
@@ -392,6 +396,15 @@
 				B5455B102CA67FF3004FE7D4 /* AppColor.swift */,
 			);
 			path = Commons;
+			sourceTree = "<group>";
+		};
+		B5EE04682CC8CE4300D3E436 /* ItemDetailView */ = {
+			isa = PBXGroup;
+			children = (
+				36D9A1D42CAB048A003F6AF2 /* ItemDetailView.swift */,
+				B5EE04692CC8CE5E00D3E436 /* ItemDetailViewModel.swift */,
+			);
+			path = ItemDetailView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -547,6 +560,7 @@
 				B5455B112CA67FF3004FE7D4 /* AppColor.swift in Sources */,
 				B5EE04622CC7865F00D3E436 /* CreateOrderView.swift in Sources */,
 				B5455AFD2CA6657F004FE7D4 /* Reachability.swift in Sources */,
+				B5EE046A2CC8CE5E00D3E436 /* ItemDetailViewModel.swift in Sources */,
 				36C876062CC56319002DC791 /* Product.swift in Sources */,
 				3607D5BF2CA96F48000888C1 /* OrderStatusRowView.swift in Sources */,
 				369AE6412CA7BA1E001FC4E8 /* SearchView.swift in Sources */,
@@ -734,10 +748,10 @@
 				DEVELOPMENT_TEAM = 6GYX57JYFS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TheCoffeeShop/Info.plist;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to locate nearest restaurant";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
@@ -770,10 +784,10 @@
 				DEVELOPMENT_TEAM = 6GYX57JYFS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TheCoffeeShop/Info.plist;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to locate nearest restaurant";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;

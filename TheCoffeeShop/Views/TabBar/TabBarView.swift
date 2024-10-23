@@ -41,7 +41,6 @@ enum TabbarItems: Int, CaseIterable {
 }
 
 struct TabBarView: View {
-    @EnvironmentObject var locationEnvironment: LocationEnvironment
     @EnvironmentObject var userEnvironment: UserEnvironment
     @EnvironmentObject var cartEnvironment: CartEnvironment
     @StateObject var viewModel: TabBarViewModel = TabBarViewModel()
@@ -79,12 +78,29 @@ struct TabBarView: View {
                             .frame(width: titleWidth(title: title), height: 3)
                             .foregroundStyle(isActive ? .red : .clear)
                         ZStack {
-                            Image(systemName: icon)
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(isActive ? .brown : .gray)
+                            if let profileURL = URL(string: viewModel.getProfileImageURL(userEnvironment)),
+                               item == .profile {
+                                AsyncCachedImage(url: profileURL) { image in
+                                    image
+                                        .resizable()
+                                        .frame(width: 24, height: 24)
+                                        .foregroundColor(isActive ? .brown : .gray)
+                                } placeholder: {
+                                    Image(systemName: icon)
+                                        .resizable()
+                                        .frame(width: 24, height: 24)
+                                        .foregroundColor(isActive ? .brown : .gray)
+                                }
+
+                            } else {
+                                Image(systemName: icon)
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                    .foregroundColor(isActive ? .brown : .gray)
+                            }
                             
-                            if let badge = viewModel.getCart() {
+                            if let badge = viewModel.getBadge(cartEnvironment),
+                               item == .cart {
                                 Text("\(badge)")
                                     .font(.footnote)
                                     .foregroundColor(.white)
@@ -121,6 +137,5 @@ struct TabBarView: View {
 #Preview {
     TabBarView()
         .environmentObject(UserEnvironment())
-        .environmentObject(LocationEnvironment())
         .environmentObject(CartEnvironment())
 }

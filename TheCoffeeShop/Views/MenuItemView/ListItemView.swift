@@ -8,15 +8,16 @@
 import SwiftUI
 
 struct ListItemView: View {
-    @Binding var product: Product
-    let toggleFavourite: (Product) -> Void
-    let addToCart: (Product) -> Void
+    @Binding var cartItem: CartItem
+    let toggleFavourite: (CartItem) -> Void
+    let addToCart: (CartItem) -> Void
+    let removeFromCart: (CartItem) -> Void
     var showQuantityOption = true
     var showFavouriteButton = true
     
     var body: some View {
         HStack {
-            AsyncCachedImage(url: URL(string: product.image), content: { image in
+            AsyncCachedImage(url: URL(string: cartItem.product.image), content: { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -28,21 +29,21 @@ struct ListItemView: View {
             }
 
             VStack(alignment: .leading, spacing: 5) {
-                Text(product.name)
+                Text(cartItem.product.name)
                     .font(.headline)
                     .foregroundColor(.black)
-                    .lineLimit(2)
-                Text(String(format: "%.2f$", product.price))
+                    .lineLimit(1)
+                Text(String(format: "%.2f$", cartItem.product.price))
                     .font(.subheadline)
                     .foregroundColor(.black)
                 if showFavouriteButton {
                     Button(action: {
-                        toggleFavourite(product)
+                        toggleFavourite(cartItem)
                     }) {
-                        Image(systemName: product.isFavourite ? "heart.fill" : "heart")
+                        Image(systemName: cartItem.product.isFavourite ? "heart.fill" : "heart")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .foregroundColor(product.isFavourite ? .red : .gray)
+                            .foregroundColor(cartItem.product.isFavourite ? .red : .gray)
                             .frame(width: 24, height: 24)
                             .padding(8)
                     }
@@ -57,13 +58,18 @@ struct ListItemView: View {
                 HStack {
                     Image(systemName: "star.fill")
                         .foregroundColor(.gray)
-                    Text("\(product.rating, specifier: "%.1f")")
+                    Text("\(cartItem.product.rating, specifier: "%.1f")")
                         .foregroundColor(.gray)
                 }
                 
                 if showQuantityOption {
                     HStack {
                         Button(action: {
+                            if cartItem.quantity > 1 {
+                                cartItem.quantity -= 1
+                            } else {
+                                removeFromCart(cartItem)
+                            }
                         }) {
                             Text("-")
                                 .frame(width: 22, height: 22)
@@ -72,10 +78,13 @@ struct ListItemView: View {
                                 .clipShape(Circle())
                         }
                         
-                        Text("1")
+                        Text("\(cartItem.quantity)")
                             .frame(width: 30, height: 30)
                         
                         Button(action: {
+                            if cartItem.quantity < 99 {
+                                cartItem.quantity += 1
+                            }
                         }) {
                             Text("+")
                                 .frame(width: 22, height: 22)
@@ -86,7 +95,7 @@ struct ListItemView: View {
                     }
                 } else {
                     Button(action: {
-                        addToCart(product)
+                        addToCart(cartItem)
                     }) {
                         Text("+")
                             .frame(width: 40, height: 40)
@@ -106,22 +115,31 @@ struct ListItemView: View {
 }
 
 #Preview {
-    ListItemView(product: .constant(
-        Product(
-            id: UUID(),
-            name: "Coffee",
-            image: "",
-            price: 5.45,
-            sizes: [.small, .medium],
-            productDescription: "A great coffee",
-            rating: 5,
-            toppings: [],
-            isFavourite: false,
-            category: ProductCategory(
-                imageUrl: "https://picsum.photos/id/12/2500/1667",
-                title: "Coffee")
-        )
-    ),
-    toggleFavourite: {_ in },
-    addToCart: {_ in })
+    ListItemView(
+        cartItem: .constant(
+            CartItem(
+                product: Product(
+                id: UUID(),
+                name: "Coffee",
+                image: "",
+                price: 5.45,
+                sizes: [.small, .medium],
+                productDescription: "A great coffee",
+                rating: 5,
+                toppings: [],
+                isFavourite: false,
+                category: ProductCategory(
+                    imageUrl: "https://picsum.photos/id/12/2500/1667",
+                    title: "Coffee")
+                ),
+                size: Size.small,
+                price: 0,
+                quantity: 0,
+                toppings: []
+            )
+        ),
+        toggleFavourite: {_ in },
+        addToCart: {_ in },
+        removeFromCart: {_ in }
+    )
 }

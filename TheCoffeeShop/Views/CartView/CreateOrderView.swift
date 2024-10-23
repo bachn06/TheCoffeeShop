@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CreateOrderView: View {
-    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var router: Router
     @Binding var cartItems: [CartItem]
     let createOrder: () -> Void
     
@@ -23,7 +23,7 @@ struct CreateOrderView: View {
             VStack(alignment: .leading) {
                 HStack {
                     Button(action: {
-                        dismiss()
+                        router.popView()
                     }) {
                         Image(systemName: "chevron.left")
                             .foregroundStyle(.white)
@@ -44,9 +44,10 @@ struct CreateOrderView: View {
                 ScrollView {
                     ForEach($cartItems, id: \.product.id) { item in
                         ListItemView(
-                            product: item.product,
+                            cartItem: item,
                             toggleFavourite: { _ in },
                             addToCart: { _ in },
+                            removeFromCart: { _ in },
                             showQuantityOption: true
                         )
                     }

@@ -8,11 +8,11 @@
 import SwiftUI
 
 final class TabBarViewModel: ObservableObject {
-    func getProfileImageURL() -> String {
-        ""
+    func getProfileImageURL(_ userEnvironment: UserEnvironment) -> String {
+        userEnvironment.imageUrl
     }
     
-    func getCart() -> Int? {
-        nil
+    func getBadge(_ cartEnvironment: CartEnvironment) -> Int? {
+        cartEnvironment.cartItems.isEmpty ? nil : cartEnvironment.cartItems.count
     }
 }

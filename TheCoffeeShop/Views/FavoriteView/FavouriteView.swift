@@ -19,11 +19,12 @@ struct FavouriteView: View {
                     .padding(.horizontal, 10)
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.flexible())], spacing: 10) {
-                        ForEach($viewModel.filteredProducts, id: \.id) { item in
-                            ListItemView(product: item, toggleFavourite: { product in
-                                viewModel.toggleFavourite(product)
-                            }, addToCart: { product in
-                                viewModel.addToCart(product)
+                        ForEach($viewModel.filteredProducts, id: \.product.id) { item in
+                            ListItemView(cartItem: item, toggleFavourite: { item in
+                                viewModel.toggleFavourite(item, userEnvironment)
+                            }, addToCart: { item in
+                                viewModel.addToCart(item, cartEnvironment)
+                            }, removeFromCart: { _ in
                             }, showQuantityOption: false)
                         }
                     }
