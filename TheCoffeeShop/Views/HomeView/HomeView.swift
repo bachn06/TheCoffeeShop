@@ -9,18 +9,18 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var cartEnvironment: CartEnvironment
-    @EnvironmentObject var locationEnvironment: LocationEnvironment
     @EnvironmentObject var userEnvironment: UserEnvironment
+    @EnvironmentObject var router: Router
     @StateObject var viewModel: HomeViewModel = HomeViewModel()
     
     var body: some View {
         VStack(spacing: 20) {
-            NavigationLink(
-                destination: MapView()
-            ) {
+            Button {
+                router.push(.mapView)
+            } label: {
                 HStack {
                     Image(systemName: "mappin.and.ellipse")
-                    Text(locationEnvironment.address)
+                    Text(userEnvironment.address.isEmpty ? "Select an address" : userEnvironment.address)
                         .font(.subheadline)
                         .fontWeight(.semibold)
                     Spacer()
@@ -50,8 +50,8 @@ struct HomeView: View {
             ScrollView {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 0) {
                     ForEach($viewModel.filteredProducts, id: \.product.id) { item in
-                        NavigationLink {
-                            ItemDetailView(cartItem: item)
+                        Button {
+                            router.push(.productDetail(item.wrappedValue))
                         } label: {
                             GridItemView(cartItem: item, toggleFavourite: { cartItem in
                                 viewModel.toggleFavourite(cartItem, userEnvironment)
@@ -66,6 +66,7 @@ struct HomeView: View {
         }
         .onAppear {
             viewModel.fetchProducts(userEnvironment)
+            userEnvironment.checkLocationServices()
         }
     }
 }
@@ -73,6 +74,6 @@ struct HomeView: View {
 #Preview {
     HomeView()
         .environmentObject(UserEnvironment())
-        .environmentObject(LocationEnvironment())
         .environmentObject(CartEnvironment())
+        .environmentObject(Router())
 }

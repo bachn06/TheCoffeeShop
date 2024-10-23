@@ -9,25 +9,24 @@ import SwiftUI
 import MapKit
 
 struct MapView: View {
+    @EnvironmentObject var userEnvironment: UserEnvironment
+    @EnvironmentObject var router: Router
     @State private var cameraPosition: MapCameraPosition = .automatic
     @State private var userLocation: CLLocationCoordinate2D?
     @State private var searchResults: [MKMapItem] = []
-    @Environment(\.dismiss) private var dismiss
+    @State private var address: String?
+    @State private var searchContentSize: CGSize = .zero
     
     var body: some View {
         ZStack(alignment: .top) {
             Map(position: $cameraPosition) {
                 if let userLocation {
-                    Marker("", coordinate: userLocation)
+                    Marker(address ?? "", coordinate: userLocation)
                 }
             }
-            .onAppear {
-                checkLocationServices()
-            }
             
-            VStack {
-                // Search and Reset controls
-                HStack {
+            VStack(spacing: 0) {
+                HStack(alignment: .top) {
                     Image(systemName: "chevron.left")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -36,43 +35,64 @@ struct MapView: View {
                         .background(Color(.systemGray6))
                         .clipShape(Circle())
                         .onTapGesture {
-                            dismiss()
+                            router.popView()
                         }
                     
-                    MapSearchView(searchResults: $searchResults, onLocationSelect: { selectedLocation in
-                        userLocation = selectedLocation
-                        cameraPosition = .automatic
-                    }, onReset: {
-                        userLocation = nil
-                    })
-                }
-                .padding()
-                
-                // Search results list
-                if !searchResults.isEmpty {
-                    ScrollView {
-                        VStack(alignment: .leading) {
-                            ForEach(searchResults, id: \.self) { item in
-                                Text(item.name ?? "Unknown Location")
-                                    .padding()
-                                    .background(Color(.systemGray6))
-                                    .cornerRadius(8)
-                                    .onTapGesture {
-                                        let coordinate = item.placemark.coordinate
-                                        userLocation = coordinate
-                                        cameraPosition = .automatic
-                                        searchResults = []
-                                    }
+                    VStack {
+                        MapSearchView(searchResults: $searchResults, onLocationSelect: { selectedLocation in
+                            userLocation = selectedLocation
+                            cameraPosition = .automatic
+                            updateAddress()
+                        }, onReset: {
+                            userLocation = nil
+                        })
+                        .overlay {
+                            GeometryReader { geo in
+                                Color.clear.onAppear {
+                                    searchContentSize = geo.size
+                                }
                             }
                         }
-                        .padding(.horizontal)
+                        if !searchResults.isEmpty {
+                            ScrollView {
+                                VStack(alignment: .leading) {
+                                    ForEach(searchResults, id: \.self) { item in
+                                        Text(item.getDetailAddress())
+                                            .padding()
+                                            .cornerRadius(8)
+                                            .onTapGesture {
+                                                let coordinate = item.placemark.coordinate
+                                                userLocation = coordinate
+                                                cameraPosition = .automatic
+                                                searchResults = []
+                                                updateAddress()
+                                            }
+                                            .frame(width: searchContentSize.width, alignment: .leading)
+                                    }
+                                }
+                                .background(Color(.systemGray6))
+                            }
+                            .frame(width: searchContentSize.width)
+                            .frame(maxHeight: 110)
+                            .background(.gray)
+                        }
                     }
-                    .background(Color.white)
                 }
+                .padding()
             }
         }
+        .onAppear {
+            checkLocationServices()
+        }
+        .navigationBarBackButtonHidden()
         .toolbar(.hidden)
-        .toolbar(.hidden, for: .tabBar)
+    }
+    
+    private func updateAddress() {
+        userLocation?.getAddress(completion: { address in
+            self.address = address
+            userEnvironment.address = address ?? ""
+        })
     }
     
     private func checkLocationServices() {
@@ -81,9 +101,11 @@ struct MapView: View {
             guard CLLocationManager.locationServicesEnabled() else { return }
             let locationManager = CLLocationManager()
             locationManager.requestWhenInUseAuthorization()
+            locationManager.startUpdatingLocation()
 
             if let location = locationManager.location?.coordinate {
                 userLocation = location
+                updateAddress()
             }
         }
     }
@@ -94,25 +116,27 @@ struct MapSearchView: View {
     @Binding var searchResults: [MKMapItem]
     var onLocationSelect: (CLLocationCoordinate2D) -> Void
     var onReset: () -> Void
-    
+
     var body: some View {
-        HStack {
+        VStack {
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.gray)
                 
-                TextField("Search location ...", text: $searchText, onCommit: {
+                TextField("Search ...", text: $searchText, onEditingChanged: { isEditing in
                     searchForLocation()
                 })
                 .padding(.leading, 5)
-                
-                // Reset button
-                Button(action: {
-                    searchText = ""
-                    onReset()
-                }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
+
+                if !searchText.isEmpty {
+                    Button(action: {
+                        searchText = ""
+                        searchResults.removeAll()
+                        onReset()
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.gray)
+                    }
                 }
             }
             .padding(.horizontal)
@@ -125,16 +149,26 @@ struct MapSearchView: View {
                     .foregroundColor(.gray)
             )
         }
-        .padding(.horizontal)
+        .onAppear {
+            searchResults.removeAll()
+        }
     }
     
     private func searchForLocation() {
+        guard !searchText.isEmpty else { return }
+        
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = searchText
         let search = MKLocalSearch(request: request)
         
         search.start { response, error in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }
+            
             if let items = response?.mapItems {
+                print(items)
                 searchResults = items
             }
         }
@@ -143,4 +177,6 @@ struct MapSearchView: View {
 
 #Preview {
     MapView()
+        .environmentObject(UserEnvironment())
+        .environmentObject(Router())
 }

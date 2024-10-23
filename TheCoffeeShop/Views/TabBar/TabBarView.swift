@@ -29,13 +29,13 @@ enum TabbarItems: Int, CaseIterable {
     var iconName: String{
         switch self {
         case .home:
-            return "house.fill"
+            return "home"
         case .favorite:
-            return "heart.fill"
+            return "favourite"
         case .cart:
-            return "cart.fill"
+            return "cart"
         case .profile:
-            return "person.fill"
+            return "profile"
         }
     }
 }
@@ -69,14 +69,10 @@ struct TabBarView: View {
 
             HStack {
                 ForEach((TabbarItems.allCases), id: \.self) { item in
-                    let icon = item.iconName
-                    let title = item.title
-                    let isActive = selectedTab == item
-                    
                     VStack {
                         Rectangle()
-                            .frame(width: titleWidth(title: title), height: 3)
-                            .foregroundStyle(isActive ? .red : .clear)
+                            .frame(width: titleWidth(title: item.title), height: 3)
+                            .foregroundStyle(selectedTab == item ? .red : .clear)
                         ZStack {
                             if let profileURL = URL(string: viewModel.getProfileImageURL(userEnvironment)),
                                item == .profile {
@@ -84,19 +80,25 @@ struct TabBarView: View {
                                     image
                                         .resizable()
                                         .frame(width: 24, height: 24)
-                                        .foregroundColor(isActive ? .brown : .gray)
+                                        .clipShape(Circle())
                                 } placeholder: {
-                                    Image(systemName: icon)
+                                    Image(item.iconName)
+                                        .renderingMode(.template)
                                         .resizable()
                                         .frame(width: 24, height: 24)
-                                        .foregroundColor(isActive ? .brown : .gray)
+                                        .foregroundStyle(
+                                            selectedTab == item ? LinearGradient(gradient: Gradient(colors: [Color(hex: "#CB8A58"), Color(hex: "#562B1A")]), startPoint: .leading, endPoint: .trailing) : LinearGradient(colors: [Color(hex: "#CBCBD4")], startPoint: .leading, endPoint: .trailing)
+                                        )
                                 }
 
                             } else {
-                                Image(systemName: icon)
+                                Image(item.iconName)
+                                    .renderingMode(.template)
                                     .resizable()
                                     .frame(width: 24, height: 24)
-                                    .foregroundColor(isActive ? .brown : .gray)
+                                    .foregroundStyle(
+                                        selectedTab == item ? LinearGradient(gradient: Gradient(colors: [Color(hex: "#CB8A58"), Color(hex: "#562B1A")]), startPoint: .leading, endPoint: .trailing) : LinearGradient(colors: [Color(hex: "#CBCBD4")], startPoint: .leading, endPoint: .trailing)
+                                    )
                             }
                             
                             if let badge = viewModel.getBadge(cartEnvironment),
@@ -111,9 +113,11 @@ struct TabBarView: View {
                                     .offset(x: 10, y: -10)
                             }
                         }
-                        Text(title)
+                        Text(item.title)
                             .font(.caption)
-                            .foregroundColor(isActive ? .brown : .gray)
+                            .foregroundStyle(
+                                selectedTab == item ? LinearGradient(gradient: Gradient(colors: [Color(hex: "#CB8A58"), Color(hex: "#562B1A")]), startPoint: .leading, endPoint: .trailing) : LinearGradient(colors: [Color(hex: "#CBCBD4")], startPoint: .leading, endPoint: .trailing)
+                            )
                     }
                     .onTapGesture {
                         selectedTab = item

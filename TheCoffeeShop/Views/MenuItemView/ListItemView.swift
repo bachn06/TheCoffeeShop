@@ -9,11 +9,12 @@ import SwiftUI
 
 struct ListItemView: View {
     @Binding var cartItem: CartItem
-    let toggleFavourite: (CartItem) -> Void
-    let addToCart: (CartItem) -> Void
-    let removeFromCart: (CartItem) -> Void
-    var showQuantityOption = true
-    var showFavouriteButton = true
+    var toggleFavourite: ((CartItem) -> Void)?
+    var addToCart: ((CartItem) -> Void)?
+    var increaseItemQuantity: ((CartItem) -> Void)?
+    var decreseItemQuantity: ((CartItem) -> Void)?
+    var showQuantityOption: Bool = true
+    var showFavouriteButton: Bool = true
     
     var body: some View {
         HStack {
@@ -33,12 +34,12 @@ struct ListItemView: View {
                     .font(.headline)
                     .foregroundColor(.black)
                     .lineLimit(1)
-                Text(String(format: "%.2f$", cartItem.product.price))
+                Text(String(format: "%.2f$", cartItem.price))
                     .font(.subheadline)
                     .foregroundColor(.black)
                 if showFavouriteButton {
                     Button(action: {
-                        toggleFavourite(cartItem)
+                        toggleFavourite?(cartItem)
                     }) {
                         Image(systemName: cartItem.product.isFavourite ? "heart.fill" : "heart")
                             .resizable()
@@ -65,11 +66,7 @@ struct ListItemView: View {
                 if showQuantityOption {
                     HStack {
                         Button(action: {
-                            if cartItem.quantity > 1 {
-                                cartItem.quantity -= 1
-                            } else {
-                                removeFromCart(cartItem)
-                            }
+                            decreseItemQuantity?(cartItem)
                         }) {
                             Text("-")
                                 .frame(width: 22, height: 22)
@@ -82,9 +79,7 @@ struct ListItemView: View {
                             .frame(width: 30, height: 30)
                         
                         Button(action: {
-                            if cartItem.quantity < 99 {
-                                cartItem.quantity += 1
-                            }
+                            increaseItemQuantity?(cartItem)
                         }) {
                             Text("+")
                                 .frame(width: 22, height: 22)
@@ -95,7 +90,7 @@ struct ListItemView: View {
                     }
                 } else {
                     Button(action: {
-                        addToCart(cartItem)
+                        addToCart?(cartItem)
                     }) {
                         Text("+")
                             .frame(width: 40, height: 40)
@@ -140,6 +135,7 @@ struct ListItemView: View {
         ),
         toggleFavourite: {_ in },
         addToCart: {_ in },
-        removeFromCart: {_ in }
+        increaseItemQuantity: {_ in },
+        decreseItemQuantity: {_ in }
     )
 }

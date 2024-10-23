@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CartView: View {
     @EnvironmentObject var cartEnvironment: CartEnvironment
+    @EnvironmentObject var router: Router
     @StateObject var viewModel: CartViewModel = CartViewModel()
     
     var body: some View {
@@ -23,55 +24,69 @@ struct CartView: View {
                 }
                 .padding(.horizontal)
                 
-                Text("YOUR ORDERS:")
-                    .font(.headline)
-                    .bold()
-                    .padding(.horizontal)
-                
-                ScrollView {
-                    ForEach($viewModel.cartItems, id: \.product.id) { item in
-                        ListItemView(
-                            cartItem: item,
-                            toggleFavourite: { _ in },
-                            addToCart: { _ in },
-                            removeFromCart: { item in
-                                viewModel.removeItemFromCart(item, cartEnvironment)
-                            },
-                            showQuantityOption: true,
-                            showFavouriteButton: false
-                        )
-                    }
-                }
-                
-                HStack {
-                    Spacer()
-                    Text("Total: \(String(format: "%.1f$", viewModel.totalPrice))")
+                if !viewModel.cartItems.isEmpty {
+                    Text("YOUR ORDERS:")
                         .font(.headline)
                         .bold()
-                }
-                .padding()
-                
-                Spacer()
-                
-                NavigationLink {
-                    CreateOrderView(cartItems: $viewModel.cartItems) {
-                        
+                        .padding(.horizontal)
+                    
+                    ScrollView {
+                        ForEach($viewModel.cartItems, id: \.product.id) { item in
+                            ListItemView(
+                                cartItem: item,
+                                increaseItemQuantity: { item in
+                                    viewModel.increaseItemQuantity(item, cartEnvironment)
+                                },
+                                decreseItemQuantity: { item in
+                                    viewModel.decreaseItemQuantity(item, cartEnvironment)
+                                },
+                                showQuantityOption: true,
+                                showFavouriteButton: false
+                            )
+                            .onTapGesture {
+                                router.push(.productDetail(item.wrappedValue))
+                            }
+                        }
                     }
-                } label: {
+                    
                     HStack {
-                        Text("Go to Cart")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding()
                         Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(.white)
-                            .padding()
+                        Text("Total: \(String(format: "%.2f$", viewModel.totalPrice))")
+                            .font(.headline)
+                            .bold()
+                    }
+                    .padding()
+                    
+                    Spacer()
+                    
+                    Button {
+                        router.push(.createOrderView(viewModel.cartItems))
+                    } label: {
+                        HStack {
+                            Text("Go to Cart")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(.white)
+                                .padding()
+                        }
+                        .frame(maxWidth: .infinity)
+                        .background(.black)
+                        .cornerRadius(16)
+                        .padding(.horizontal, 20)
+                    }
+                } else {
+                    Spacer()
+                    VStack(alignment: .center) {
+                        Text("Empty")
+                            .font(.largeTitle)
+                        Text("Add item to make an order")
+                            .font(.title2)
                     }
                     .frame(maxWidth: .infinity)
-                    .background(.black)
-                    .cornerRadius(16)
-                    .padding(.horizontal, 20)
+                    Spacer()
                 }
             }
         }
@@ -84,5 +99,6 @@ struct CartView: View {
 
 #Preview {
     CartView()
+        .environmentObject(Router())
         .environmentObject(CartEnvironment())
 }

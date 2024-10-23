@@ -8,9 +8,14 @@
 import SwiftUI
 
 struct CreateOrderView: View {
+    @EnvironmentObject var userEnvironment: UserEnvironment
+    @EnvironmentObject var cartEnvironment: CartEnvironment
     @EnvironmentObject var router: Router
-    @Binding var cartItems: [CartItem]
-    let createOrder: () -> Void
+    @StateObject var viewModel: CreateOrderViewModel
+    
+    init(cartItems: [CartItem]) {
+        _viewModel = StateObject(wrappedValue: CreateOrderViewModel(cartItems: cartItems))
+    }
     
     @State private var selectedPaymentMethod: PaymentMethod = .applePay
     @State private var isExpanded = false
@@ -42,13 +47,17 @@ struct CreateOrderView: View {
                     .padding(.horizontal, 20)
                 
                 ScrollView {
-                    ForEach($cartItems, id: \.product.id) { item in
+                    ForEach($viewModel.cartItems, id: \.product.id) { item in
                         ListItemView(
                             cartItem: item,
-                            toggleFavourite: { _ in },
-                            addToCart: { _ in },
-                            removeFromCart: { _ in },
-                            showQuantityOption: true
+                            increaseItemQuantity: { item in
+                                viewModel.increaseItemQuantity(item, cartEnvironment)
+                            },
+                            decreseItemQuantity: { item in
+                                viewModel.decreaseItemQuantity(item, cartEnvironment)
+                            },
+                            showQuantityOption: true,
+                            showFavouriteButton: false
                         )
                     }
                 }
@@ -57,7 +66,7 @@ struct CreateOrderView: View {
                 VStack {
                     HStack {
                         Image(systemName: "mappin.and.ellipse")
-                        Text("Select address")
+                        Text(userEnvironment.address)
                             .font(.subheadline)
                             .fontWeight(.semibold)
                         Spacer()
@@ -132,14 +141,14 @@ struct CreateOrderView: View {
                     
                     HStack {
                         Spacer()
-                        Text("Total: \(String(format: "%.1f$", 0))")
+                        Text("Total: \(String(format: "%.2f$", viewModel.totalPrice))")
                             .font(.headline)
                             .bold()
                     }
                     .padding(.horizontal, 30)
                     
-                    NavigationLink{
-                        OrderConfirmationView()
+                    Button {
+                        viewModel.createOrder(cartEnvironment, router)
                     } label: {
                         VStack {
                             HStack {
@@ -152,11 +161,13 @@ struct CreateOrderView: View {
                                     .foregroundStyle(.white)
                                     .padding(.trailing, 30)
                             }
-                            .frame(height: 100)
+                            .frame(height: 150)
                             .frame(maxWidth: .infinity)
                             .background(.black)
                             .cornerRadius(6)
+                            
                             Spacer()
+                                .frame(height: 50)
                         }
                     }
                     
@@ -169,5 +180,8 @@ struct CreateOrderView: View {
 }
 
 #Preview {
-    CreateOrderView(cartItems: .constant([]), createOrder: {})
+    CreateOrderView(cartItems: [])
+        .environmentObject(UserEnvironment())
+        .environmentObject(CartEnvironment())
+        .environmentObject(Router())
 }

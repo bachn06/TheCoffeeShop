@@ -9,7 +9,6 @@ import SwiftUI
 
 @main
 struct TheCoffeeShopApp: App {
-    @StateObject var locationEnvironment = LocationEnvironment()
     @StateObject var userEnvironment = UserEnvironment()
     @StateObject var cartEnvironment = CartEnvironment()
     @StateObject var router = Router()
@@ -24,6 +23,14 @@ struct TheCoffeeShopApp: App {
                             LoginView()
                         case .tabbarView:
                             TabBarView()
+                        case .mapView:
+                            MapView()
+                        case .productDetail(let item):
+                            ItemDetailView(cartItem: item)
+                        case .createOrderView(let cartItems):
+                            CreateOrderView(cartItems: cartItems)
+                        case .orderConfimationView:
+                            OrderConfirmationView()
                         case .orderTrackingDetail:
                             OrderStatusDetailsView()
                         }
@@ -32,7 +39,6 @@ struct TheCoffeeShopApp: App {
             .environmentObject(router)
             .environmentObject(userEnvironment)
             .environmentObject(cartEnvironment)
-            .environmentObject(locationEnvironment)
         }
     }
 }

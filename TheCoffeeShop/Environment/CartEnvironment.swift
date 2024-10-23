@@ -8,15 +8,15 @@
 import Foundation
 
 final class CartEnvironment: ObservableObject {
-    @Published var cartItems: [CartItem] = [] {
-        didSet {
-            totalItem = cartItems.count
-            updateTotalPrice()
-        }
-    }
-    @Published var totalItem: Int = 0
+    @Published var cartItems: [CartItem] = []
     @Published var paymentMethod: PaymentMethod = .applePay
     @Published var totalPrice: String = ""
+    
+    private var debounceWorkItem: DispatchWorkItem?
+    
+    func updateCart() {
+        
+    }
     
     func addToCart(item: CartItem) {
         if let index = cartItems.firstIndex(where: { $0 == item }) {
@@ -34,13 +34,6 @@ final class CartEnvironment: ObservableObject {
                 cartItems[index].quantity -= 1
             }
         }
-    }
-    
-    func updateTotalPrice() {
-        let price = cartItems.reduce(0) {
-            $0 + $1.price * Double($1.quantity)
-        }
-        totalPrice = String(format: "%.2f$", price)
     }
 }
 

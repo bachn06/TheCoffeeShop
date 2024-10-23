@@ -88,6 +88,10 @@ extension APIService: APIServiceProtocol {
         
     }
     
+    func addToCart(cart: Cart, completion: @escaping (Result<Cart, NetworkServiceError>) -> Void) {
+        
+    }
+    
     func updateProfile(user: User, completion: @escaping (Result<User, NetworkServiceError>) -> Void) {
         
     }

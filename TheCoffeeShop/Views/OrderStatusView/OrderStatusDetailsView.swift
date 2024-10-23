@@ -12,9 +12,9 @@ struct OrderStatusDetailsView: View {
     
     let statusHistory: [OrderStatusRecord] = [
         OrderStatusRecord(status: .confirmed, timestamp: Date()),
-        OrderStatusRecord(status: .processed, timestamp: Date()),
-        OrderStatusRecord(status: .delivery, timestamp: Date()),
-        OrderStatusRecord(status: .completed, timestamp: Date())
+        OrderStatusRecord(status: .processed, timestamp: nil),
+        OrderStatusRecord(status: .delivery, timestamp: nil),
+        OrderStatusRecord(status: .completed, timestamp: nil)
     ]
     var isActive: Bool = false
     
@@ -59,7 +59,7 @@ struct OrderStatusDetailsView: View {
                 
                 VStack(spacing: 0) {
                     ForEach(statusHistory, id: \.status) { statusRecord in
-                        OrderStatusRowView(statusRecord: statusRecord, timeStamp: statusRecord.timestamp)
+                        OrderStatusRowView(statusRecord: statusRecord)
                     }
                 }
             }
@@ -76,7 +76,7 @@ struct OrderStatusDetailsView: View {
                     .background(Color.black)
                     .clipShape(Circle())
                     .onTapGesture {
-                        router.popToRoot()
+                        router.popToView(.tabbarView)
                     }
             }
         }
@@ -86,13 +86,13 @@ struct OrderStatusDetailsView: View {
     func iconForStatus(_ status: OrderStatus) -> String {
         switch status {
         case .confirmed:
-            return "shippingbox.fill"
+            return "cube"
         case .processed:
-            return "eye.circle.fill"
+            return "recordCircle"
         case .delivery:
-            return "box.truck.fill"
+            return "truck"
         case .completed:
-            return "hand.thumbsup.fill"
+            return "thumpsup"
         }
     }
 }

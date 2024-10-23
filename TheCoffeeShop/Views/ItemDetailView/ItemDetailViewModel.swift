@@ -13,13 +13,18 @@ final class ItemDetailViewModel: ObservableObject {
         var quantity: Int
     }
     
-    @Published var cartItem: CartItem?
+    @Published var cartItem: CartItem
     @Published var toppings: [Topping] = [] {
         didSet {
             updatePrice()
         }
     }
     @Published var totalPrice: Double = 0
+    
+    init(cartItem: CartItem) {
+        self.cartItem = cartItem
+        prepareData()
+    }
     
     private var basePrice: Double = 0
     
@@ -31,8 +36,7 @@ final class ItemDetailViewModel: ObservableObject {
         totalPrice = basePrice + toppingPrice
     }
     
-    func prepareData(_ cartItem: CartItem) {
-        self.cartItem = cartItem
+    func prepareData() {
         toppings = cartItem.product.toppings.compactMap({ Topping(name: $0, quantity: 0) })
         basePrice = cartItem.price
         updatePrice()
@@ -51,7 +55,7 @@ final class ItemDetailViewModel: ObservableObject {
     }
     
     func toggleFavourite(_ product: Product, _ userEnvironment: UserEnvironment) {
-        self.cartItem?.product.isFavourite.toggle()
+        self.cartItem.product.isFavourite.toggle()
         userEnvironment.toggleFavourite(product)
     }
     

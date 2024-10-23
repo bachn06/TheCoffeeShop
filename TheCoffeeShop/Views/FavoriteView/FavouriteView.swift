@@ -10,6 +10,7 @@ import SwiftUI
 struct FavouriteView: View {
     @EnvironmentObject var cartEnvironment: CartEnvironment
     @EnvironmentObject var userEnvironment: UserEnvironment
+    @EnvironmentObject var router: Router
     @StateObject var viewModel: FavouriteViewModel = FavouriteViewModel()
     
     var body: some View {
@@ -20,12 +21,18 @@ struct FavouriteView: View {
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.flexible())], spacing: 10) {
                         ForEach($viewModel.filteredProducts, id: \.product.id) { item in
-                            ListItemView(cartItem: item, toggleFavourite: { item in
-                                viewModel.toggleFavourite(item, userEnvironment)
-                            }, addToCart: { item in
-                                viewModel.addToCart(item, cartEnvironment)
-                            }, removeFromCart: { _ in
-                            }, showQuantityOption: false)
+                            ListItemView(
+                                cartItem: item,
+                                toggleFavourite: { item in
+                                    viewModel.toggleFavourite(item, userEnvironment)
+                                },
+                                addToCart: { item in
+                                    viewModel.addToCart(item, cartEnvironment)
+                                },
+                                showQuantityOption: false)
+                            .onTapGesture {
+                                router.push(.productDetail(item.wrappedValue))
+                            }
                         }
                     }
                 }
@@ -43,4 +50,5 @@ struct FavouriteView: View {
     FavouriteView()
         .environmentObject(UserEnvironment())
         .environmentObject(CartEnvironment())
+        .environmentObject(Router())
 }

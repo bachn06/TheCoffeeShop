@@ -11,8 +11,11 @@ struct ItemDetailView: View {
     @EnvironmentObject var userEnvironment: UserEnvironment
     @EnvironmentObject var cartEnvironment: CartEnvironment
     @EnvironmentObject var router: Router
-    @Binding var cartItem: CartItem
-    @StateObject var viewModel = ItemDetailViewModel()
+    @StateObject var viewModel: ItemDetailViewModel
+    
+    init(cartItem: CartItem) {
+        _viewModel = StateObject(wrappedValue: ItemDetailViewModel(cartItem: cartItem))
+    }
 
     @State private var contentSize: CGSize = .zero
     
@@ -20,7 +23,7 @@ struct ItemDetailView: View {
         ZStack {
             ZStack(alignment: .topLeading) {
                 GeometryReader { geometry in
-                    AsyncCachedImage(url: URL(string: cartItem.product.image)) { image in
+                    AsyncCachedImage(url: URL(string: viewModel.cartItem.product.image)) { image in
                         image
                             .resizable()
                             .foregroundStyle(.red)
@@ -48,12 +51,12 @@ struct ItemDetailView: View {
                     Spacer()
                     
                     Button(action: {
-                        viewModel.toggleFavourite(cartItem.product, userEnvironment)
+                        viewModel.toggleFavourite(viewModel.cartItem.product, userEnvironment)
                     }) {
-                        Image(systemName: viewModel.cartItem?.product.isFavourite ?? false ? "heart.fill" : "heart")
+                        Image(systemName: viewModel.cartItem.product.isFavourite ? "heart.fill" : "heart")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .foregroundColor(cartItem.product.isFavourite ? .red : .gray)
+                            .foregroundColor(viewModel.cartItem.product.isFavourite ? .red : .gray)
                             .frame(width: 24, height: 24)
                             .padding(.trailing, 10)
                     }
@@ -64,7 +67,7 @@ struct ItemDetailView: View {
             VStack(alignment: .leading) {
                 Spacer()
                 HStack {
-                    Text(cartItem.product.name)
+                    Text(viewModel.cartItem.product.name)
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .foregroundStyle(.white)
@@ -73,7 +76,7 @@ struct ItemDetailView: View {
                     HStack {
                         Image(systemName: "star.fill")
                             .foregroundStyle(.white)
-                        Text(String(format: "%.1f", cartItem.product.rating))
+                        Text(String(format: "%.1f", viewModel.cartItem.product.rating))
                             .foregroundStyle(.white)
                             .font(.subheadline)
                     }
@@ -92,7 +95,7 @@ struct ItemDetailView: View {
                 .padding(.horizontal, 20)
                 
                 VStack(alignment: .leading) {
-                    let sizes = cartItem.product.sizes
+                    let sizes = viewModel.cartItem.product.sizes
                     if !sizes.isEmpty {
                         VStack(alignment: .leading, spacing: 15) {
                             Text("Select Size")
@@ -102,14 +105,14 @@ struct ItemDetailView: View {
                             HStack {
                                 ForEach(sizes, id: \.self) { size in
                                     Button(action: {
-                                        cartItem.size = size
+                                        viewModel.cartItem.size = size
                                     }) {
                                         Text(size.label)
                                             .font(.subheadline)
                                             .frame(width: 90)
                                             .padding()
-                                            .background(cartItem.size == size ? Color(hex: "#846046") : Color.white)
-                                            .foregroundStyle(cartItem.size == size ? Color.white : Color.black)
+                                            .background(viewModel.cartItem.size == size ? Color(hex: "#846046") : Color.white)
+                                            .foregroundStyle(viewModel.cartItem.size == size ? Color.white : Color.black)
                                             .cornerRadius(36)
                                             .overlay {
                                                 RoundedRectangle(cornerRadius: 36)
@@ -127,7 +130,7 @@ struct ItemDetailView: View {
                         Text("About")
                             .font(.headline)
                         
-                        Text(cartItem.product.productDescription)
+                        Text(viewModel.cartItem.product.productDescription)
                             .fixedSize(horizontal: false, vertical: true)
                             .font(.body)
                             .lineLimit(6)
@@ -211,7 +214,7 @@ struct ItemDetailView: View {
                     .padding(.top, 10)
                     .padding(.horizontal, 20)
                     .onTapGesture {
-                        viewModel.addToCart(cartItem, cartEnvironment)
+                        viewModel.addToCart(viewModel.cartItem, cartEnvironment)
                         router.popView()
                     }
                 }
@@ -220,16 +223,13 @@ struct ItemDetailView: View {
                 .cornerRadius(30)
             }
         }
-        .onAppear(perform: {
-            viewModel.prepareData(cartItem)
-        })
         .navigationBarBackButtonHidden()
     }
 }
 
 #Preview {
     ItemDetailView(
-        cartItem: .constant(
+        cartItem: (
             CartItem(
                 product: Product(
                 id: UUID(),

@@ -15,7 +15,7 @@ class LoginViewModel: ObservableObject {
     @Published var isPhoneNumberValid: Bool = true
     
     func login(router: Router, userManager: UserEnvironment) {
-        router.push(.tabbarView)
+        router.setRoot(.tabbarView)
         APIService.shared.login(userName: userName, phoneNumber: phoneNumber) { result in
             switch result {
             case .success(let user):
@@ -27,8 +27,8 @@ class LoginViewModel: ObservableObject {
         }
     }
     
-    func updateUserStorage(_ user: User, _ userManager: UserEnvironment) {
-        userManager.userName = user.name
-        userManager.phoneNumber = user.phone
+    func updateUserStorage(_ user: User, _ userEnvironment: UserEnvironment) {
+        userEnvironment.userName = user.name
+        userEnvironment.phoneNumber = user.phone
     }
 }

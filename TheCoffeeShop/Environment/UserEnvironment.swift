@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 final class UserEnvironment: ObservableObject {
     @Published var userName: String = ""
@@ -25,6 +26,22 @@ final class UserEnvironment: ObservableObject {
         
         if let index = products.firstIndex(where: { $0 == product }) {
             products[index].isFavourite.toggle()
+        }
+    }
+    
+    func checkLocationServices() {
+        let mapQueue = DispatchQueue(label: "com.bachng.dev.mapService")
+        mapQueue.async {
+            guard CLLocationManager.locationServicesEnabled() else { return }
+            let locationManager = CLLocationManager()
+            locationManager.requestWhenInUseAuthorization()
+            locationManager.startUpdatingLocation()
+
+            if let location = locationManager.location?.coordinate {
+                location.getAddress { address in
+                    self.address = address ?? ""
+                }
+            }
         }
     }
 }

@@ -15,7 +15,7 @@ final class SplashViewModel: ObservableObject {
                 case .success(let products):
                     self.handleProductResponse(products, userEnvironment)
                     completion()
-                case .failure(let failure):
+                case .failure:
                     break
                 }
             }

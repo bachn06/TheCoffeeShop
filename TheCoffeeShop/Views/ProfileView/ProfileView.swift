@@ -50,7 +50,7 @@ struct ProfileView: View {
                     Button(action: {
                         isEditingName.toggle()
                         if !isEditingName {
-                            viewModel.updateProfileField(.name)
+                            viewModel.updateProfileField(.name, userEnvironment)
                         }
                     }) {
                         Image(systemName: isEditingName ? "checkmark" : "pencil")
@@ -82,7 +82,7 @@ struct ProfileView: View {
                     Button(action: {
                         isEditingPhone.toggle()
                         if !isEditingName {
-                            viewModel.updateProfileField(.phoneNumber)
+                            viewModel.updateProfileField(.phoneNumber, userEnvironment)
                         }
                     }) {
                         Image(systemName: isEditingPhone ? "checkmark" : "pencil")
@@ -109,7 +109,7 @@ struct ProfileView: View {
                     Button(action: {
                         isEditingAddress.toggle()
                         if !isEditingName {
-                            viewModel.updateProfileField(.address)
+                            viewModel.updateProfileField(.address, userEnvironment)
                         }
                     }) {
                         Image(systemName: isEditingAddress ? "checkmark" : "pencil")
@@ -140,11 +140,12 @@ struct ProfileView: View {
         }
         .padding(.top, 50)
         .onAppear {
-            viewModel.fetchProfile()
+            viewModel.fetchProfile(userEnvironment)
         }
     }
 }
 
 #Preview {
     ProfileView()
+        .environmentObject(UserEnvironment())
 }

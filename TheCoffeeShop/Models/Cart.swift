@@ -12,7 +12,7 @@ struct Cart: Codable {
     var paymentMethod: PaymentMethod
 }
 
-struct CartItem: Codable {
+struct CartItem: Codable, Hashable {
     var product: Product
     var size: Size?
     var price: Double
@@ -20,7 +20,7 @@ struct CartItem: Codable {
     var toppings: [Topping]
 }
 
-struct Topping: Codable {
+struct Topping: Codable, Hashable {
     var topping: String
     var quantity: Int
 }

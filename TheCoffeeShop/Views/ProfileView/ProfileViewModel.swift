@@ -24,22 +24,25 @@ final class ProfileViewModel: ObservableObject {
     @Published var isAddressValid: Bool = true
     
     func logout(router: Router) {
-        router.push(.loginView)
+        router.setRoot(.loginView)
     }
     
-    func fetchProfile() {
-        
+    func fetchProfile(_ userEnvironment: UserEnvironment) {
+        avatarUrl = userEnvironment.imageUrl
+        name = userEnvironment.userName
+        phoneNumber = userEnvironment.phoneNumber
+        address = userEnvironment.address
     }
     
-    func updateProfileField(_ field: ProfileField) {
+    func updateProfileField(_ field: ProfileField, _ userEnvironment: UserEnvironment) {
         guard validateField(field) else { return }
         switch field {
         case .name:
-            updateName(name)
+            updateName(name, userEnvironment)
         case .phoneNumber:
-            updatePhoneNumber(phoneNumber)
+            updatePhoneNumber(phoneNumber, userEnvironment)
         case .address:
-            updateAddress(address)
+            updateAddress(address, userEnvironment)
         }
     }
     
@@ -57,15 +60,18 @@ final class ProfileViewModel: ObservableObject {
         }
     }
     
-    private func updateName(_ name: String) {
-        print("update name")
+    private func updateName(_ name: String, _ userEnvironment: UserEnvironment) {
+        self.name = name
+        userEnvironment.userName = name
     }
     
-    private func updatePhoneNumber(_ phoneNumber: String) {
-        
+    private func updatePhoneNumber(_ phoneNumber: String, _ userEnvironment: UserEnvironment) {
+        self.phoneNumber = phoneNumber
+        userEnvironment.phoneNumber = phoneNumber
     }
     
-    private func updateAddress(_ address: String) {
-        
+    private func updateAddress(_ address: String, _ userEnvironment: UserEnvironment) {
+        self.address = address
+        userEnvironment.address = address
     }
 }

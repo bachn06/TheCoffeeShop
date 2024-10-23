@@ -10,13 +10,13 @@ import SwiftUI
 struct OrderStatusRowView: View {
     let statusRecord: OrderStatusRecord
     var isActive: Bool = false
-    let timeStamp: Date
     
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
                 Text(statusRecord.status.getDisplayValue())
                     .font(.headline)
+                
                 Text(formattedDate(statusRecord.timestamp))
                     .font(.subheadline)
                     .foregroundColor(.gray)
@@ -39,13 +39,19 @@ struct OrderStatusRowView: View {
         .cornerRadius(12)
     }
     
-    func formattedDate(_ date: Date) -> String {
+    func formattedDate(_ date: Date?) -> String {
+        guard let date else {
+            return "*******"
+        }
         let formatter = DateFormatter()
         formatter.dateFormat = "dd-MM-yyyy"
         return formatter.string(from: date)
     }
     
-    func formattedTime(_ date: Date) -> String {
+    func formattedTime(_ date: Date?) -> String {
+        guard let date else {
+            return ""
+        }
         let formatter = DateFormatter()
         formatter.dateFormat = "h:mma"
         formatter.amSymbol = "AM"
@@ -55,5 +61,5 @@ struct OrderStatusRowView: View {
 }
 
 #Preview {
-    OrderStatusRowView(statusRecord: OrderStatusRecord(status: .delivery, timestamp: Date()), timeStamp: Date())
+    OrderStatusRowView(statusRecord: OrderStatusRecord(status: .delivery, timestamp: Date()))
 }
