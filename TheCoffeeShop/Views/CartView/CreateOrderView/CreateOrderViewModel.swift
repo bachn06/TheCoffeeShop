@@ -19,6 +19,10 @@ final class CreateOrderViewModel: ObservableObject {
         self.cartItems = cartItems
     }
     
+    func getAddress(_ userEnvironment: UserEnvironment) {
+        userEnvironment.checkLocationServices()
+    }
+    
     func createOrder(_ cartEnvironment: CartEnvironment, _ router: Router) {
         cartEnvironment.cartItems = []
         router.push(.orderConfimationView)

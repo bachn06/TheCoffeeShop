@@ -15,9 +15,9 @@ enum ProfileField {
 
 final class ProfileViewModel: ObservableObject {
     @Published var avatarUrl: String = "https://avatars.githubusercontent.com/u/64175324"
-    @Published var name: String = "Bach"
-    @Published var phoneNumber: String = "+84123456789"
-    @Published var address: String = "Hanoi, Hanoi, VN"
+    @Published var name: String = ""
+    @Published var phoneNumber: String = ""
+    @Published var address: String = ""
     
     @Published var isNameValid: Bool = true
     @Published var isPhoneNumberValid: Bool = true
@@ -52,7 +52,7 @@ final class ProfileViewModel: ObservableObject {
             isNameValid = !name.isEmpty
             return isNameValid
         case .phoneNumber:
-            isPhoneNumberValid = phoneNumber.allSatisfy { $0.isNumber } && phoneNumber.count >= 10
+            isPhoneNumberValid = phoneNumber.allSatisfy { $0.isNumber } && phoneNumber.count >= 10 && phoneNumber.prefix(1).contains("0")
             return isPhoneNumberValid
         case .address:
             isAddressValid = !address.isEmpty

@@ -18,13 +18,15 @@ final class UserEnvironment: ObservableObject {
     @Published var favouriteProducts: [Product] = []
     
     func toggleFavourite(_ product: Product) {
-        if let index = favouriteProducts.firstIndex(where: { $0 == product }) {
+        if let index = favouriteProducts.firstIndex(where: { $0.id == product.id }) {
             favouriteProducts.remove(at: index)
         } else {
+            var product = product
+            product.isFavourite = true
             favouriteProducts.append(product)
         }
         
-        if let index = products.firstIndex(where: { $0 == product }) {
+        if let index = products.firstIndex(where: { $0.id == product.id }) {
             products[index].isFavourite.toggle()
         }
     }
@@ -37,7 +39,8 @@ final class UserEnvironment: ObservableObject {
             locationManager.requestWhenInUseAuthorization()
             locationManager.startUpdatingLocation()
 
-            if let location = locationManager.location?.coordinate {
+            if let location = locationManager.location?.coordinate,
+               self.address.isEmpty {
                 location.getAddress { address in
                     self.address = address ?? ""
                 }

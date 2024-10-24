@@ -156,24 +156,27 @@ struct CreateOrderView: View {
                                     .font(.system(size: 20))
                                     .foregroundColor(.white)
                                     .padding(.leading, 30)
+                                    .padding(.top, 15)
                                 Spacer()
                                 Image(systemName: "chevron.right")
                                     .foregroundStyle(.white)
                                     .padding(.trailing, 30)
+                                    .padding(.top, 15)
                             }
-                            .frame(height: 150)
+                            .frame(height: 180, alignment: .top)
                             .frame(maxWidth: .infinity)
                             .background(.black)
                             .cornerRadius(6)
                             
                             Spacer()
-                                .frame(height: 50)
                         }
                     }
-                    
                 }
             }
         }
+        .onAppear(perform: {
+            viewModel.getAddress(userEnvironment)
+        })
         .ignoresSafeArea(edges: .bottom)
         .navigationBarBackButtonHidden()
     }

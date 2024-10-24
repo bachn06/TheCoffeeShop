@@ -78,15 +78,16 @@ struct CartView: View {
                         .padding(.horizontal, 20)
                     }
                 } else {
-                    Spacer()
-                    VStack(alignment: .center) {
-                        Text("Empty")
-                            .font(.largeTitle)
-                        Text("Add item to make an order")
-                            .font(.title2)
+                    GeometryReader { geo in
+                        HStack {
+                            Spacer()
+                            Image("emptyCart")
+                                .resizable()
+                                .frame(width: 200, height: 200)
+                            Spacer()
+                        }
+                        .padding(.top, geo.size.height / 4)
                     }
-                    .frame(maxWidth: .infinity)
-                    Spacer()
                 }
             }
         }
