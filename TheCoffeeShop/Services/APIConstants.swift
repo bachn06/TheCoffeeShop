@@ -8,9 +8,15 @@
 import Foundation
 
 struct APIConstants {
-    let baseURL = ""
+    static let baseURL = "http://localhost:8080"
     
     enum apiPath: String {
-        case login
+        case login = "/users/login"
+        case profile = "/users"
+        case products = "/products"
+        case favouriteProducts = "/products/favourites"
+        case carts = "/carts"
+        case order = "/order"
+        case cartItems = "/carts_item"
     }
 }

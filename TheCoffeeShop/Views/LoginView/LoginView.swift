@@ -91,7 +91,7 @@ struct LoginView: View {
                 
                 VStack {
                     Button(action: {
-                        viewModel.login(router: router, userManager: userEnvironment)
+                        viewModel.login(router: router)
                     }) {
                         Text("Login")
                             .font(.headline)
@@ -108,6 +108,11 @@ struct LoginView: View {
                 Spacer()
             }
         }
+        .alert(isPresented: $viewModel.isShowError) {
+            Alert(title: Text("Error"),
+                  message: Text("Please check your login information"),
+                  dismissButton: .default(Text("Back")))
+        }
         .navigationBarBackButtonHidden()
     }
 }
@@ -115,5 +120,4 @@ struct LoginView: View {
 #Preview {
     LoginView()
         .environmentObject(Router())
-        .environmentObject(UserEnvironment())
 }

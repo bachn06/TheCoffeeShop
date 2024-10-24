@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct SplashView: View {
-    @EnvironmentObject var userEnvironment: UserEnvironment
-    @StateObject var viewModel: SplashViewModel = SplashViewModel()
     @EnvironmentObject var router: Router
     
     var body: some View {
@@ -19,7 +17,9 @@ struct SplashView: View {
         }
         .ignoresSafeArea()
         .onAppear {
-            viewModel.fetchProducts(userEnvironment) {
+            if UserStorage.shared.getAccessToken() != nil {
+                router.push(.tabbarView)
+            } else {
                 router.push(.loginView)
             }
         }
@@ -28,6 +28,5 @@ struct SplashView: View {
 
 #Preview {
     SplashView()
-        .environmentObject(UserEnvironment())
         .environmentObject(Router())
 }

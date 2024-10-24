@@ -176,6 +176,7 @@ struct CreateOrderView: View {
         }
         .onAppear(perform: {
             viewModel.getAddress(userEnvironment)
+            viewModel.updatePrice()
         })
         .ignoresSafeArea(edges: .bottom)
         .navigationBarBackButtonHidden()

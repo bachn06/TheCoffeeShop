@@ -41,7 +41,7 @@ struct FavouriteView: View {
         }
         .edgesIgnoringSafeArea(.bottom)
         .onAppear {
-            viewModel.fetchFavouriteProduct(userEnvironment)
+            viewModel.fetchFavouriteProduct(userEnvironment, cartEnvironment)
         }
     }
 }

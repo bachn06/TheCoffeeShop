@@ -127,6 +127,10 @@ struct TabBarView: View {
             }
             .background(Color(hex: "#F8F7FA"))
         }
+        .onAppear(perform: {
+            viewModel.fetchProfile(userEnvironment)
+            viewModel.fetchCart(cartEnvironment)
+        })
         .navigationBarBackButtonHidden()
         .ignoresSafeArea(.keyboard)
     }

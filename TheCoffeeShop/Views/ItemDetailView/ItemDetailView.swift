@@ -231,6 +231,7 @@ struct ItemDetailView: View {
     ItemDetailView(
         cartItem: (
             CartItem(
+                id: UUID(),
                 product: Product(
                 id: UUID(),
                 name: "Coffee",

@@ -34,8 +34,10 @@ final class Router: ObservableObject {
     }
     
     func push(_ route: Route) {
-        routeStack.append(route)
-        path.append(route)
+        DispatchQueue.main.async {
+            self.routeStack.append(route)
+            self.path.append(route)
+        }
     }
     
     func dismiss() {

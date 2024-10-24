@@ -54,7 +54,7 @@ struct HomeView: View {
                             router.push(.productDetail(item.wrappedValue))
                         } label: {
                             GridItemView(cartItem: item, toggleFavourite: { cartItem in
-                                viewModel.toggleFavourite(cartItem, userEnvironment)
+                                viewModel.toggleFavourite(cartItem, userEnvironment, cartEnvironment)
                             }, addToCart: { cartItem in
                                 viewModel.addToCart(cartItem, cartEnvironment)
                             })
@@ -65,7 +65,7 @@ struct HomeView: View {
             .padding(.horizontal, 10)
         }
         .onAppear {
-            viewModel.fetchProducts(userEnvironment)
+            viewModel.fetchProducts(userEnvironment, cartEnvironment)
             userEnvironment.checkLocationServices()
         }
     }

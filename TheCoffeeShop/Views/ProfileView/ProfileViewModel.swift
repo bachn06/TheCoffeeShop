@@ -14,7 +14,7 @@ enum ProfileField {
 }
 
 final class ProfileViewModel: ObservableObject {
-    @Published var avatarUrl: String = "https://avatars.githubusercontent.com/u/64175324"
+    @Published var avatarUrl: String = ""
     @Published var name: String = ""
     @Published var phoneNumber: String = ""
     @Published var address: String = ""

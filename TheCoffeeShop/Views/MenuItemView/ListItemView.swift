@@ -113,7 +113,7 @@ struct ListItemView: View {
     ListItemView(
         cartItem: .constant(
             CartItem(
-                product: Product(
+                id: UUID(), product: Product(
                 id: UUID(),
                 name: "Coffee",
                 image: "",

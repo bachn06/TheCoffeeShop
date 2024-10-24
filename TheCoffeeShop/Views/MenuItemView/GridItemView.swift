@@ -116,6 +116,7 @@ struct GridItemView: View {
     GridItemView(
         cartItem: .constant(
             CartItem(
+                id: UUID(),
                 product: Product(
                 id: UUID(),
                 name: "Coffee",

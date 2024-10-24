@@ -8,27 +8,21 @@
 import SwiftUI
 
 class LoginViewModel: ObservableObject {
-    @Published var userName: String = "Host"
-    @Published var phoneNumber: String = "9876543210"
+    @Published var userName: String = "Bach"
+    @Published var phoneNumber: String = "0123456789"
+    @Published var isShowError: Bool = false
     
-    @Published var isNameValid: Bool = true
-    @Published var isPhoneNumberValid: Bool = true
-    
-    func login(router: Router, userManager: UserEnvironment) {
-        router.setRoot(.tabbarView)
+    func login(router: Router) {
         APIService.shared.login(userName: userName, phoneNumber: phoneNumber) { result in
             switch result {
-            case .success(let user):
-                self.updateUserStorage(user, userManager)
+            case .success(let data):
+                UserDefaultsStorage.shared.saveUserId(data.userId?.uuidString ?? "")
+                UserStorage.shared.saveAccessToken(data.accessToken)
                 router.push(.tabbarView)
             case .failure(let error):
-                break
+                self.isShowError = true
+                print(error)
             }
         }
-    }
-    
-    func updateUserStorage(_ user: User, _ userEnvironment: UserEnvironment) {
-        userEnvironment.userName = user.name
-        userEnvironment.phoneNumber = user.phone
     }
 }

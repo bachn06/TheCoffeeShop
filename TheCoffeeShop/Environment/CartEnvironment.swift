@@ -8,14 +8,30 @@
 import Foundation
 
 final class CartEnvironment: ObservableObject {
-    @Published var cartItems: [CartItem] = []
+    @Published var cartId: UUID = UUID()
+    @Published var cartItems: [CartItem] = [] {
+        didSet {
+            scheduleUpdateCart()
+        }
+    }
     @Published var paymentMethod: PaymentMethod = .applePay
     @Published var totalPrice: String = ""
     
     private var debounceWorkItem: DispatchWorkItem?
     
-    func updateCart() {
-        
+    func scheduleUpdateCart() {
+        debounceWorkItem?.cancel()
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            APIService.shared.updateCart(cart: Cart(id: self.cartId, cartItems: cartItems, paymentMethod: .applePay)) { _ in }
+        }
+        debounceWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: workItem)
+    }
+    
+    func updateCart(_ cart: Cart) {
+        cartId = cart.id ?? UUID()
+        cartItems = cart.cartItems
     }
     
     func addToCart(item: CartItem) {

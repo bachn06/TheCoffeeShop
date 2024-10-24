@@ -35,9 +35,9 @@ final class FavouriteViewModel: ObservableObject {
         }
     }
     
-    func fetchFavouriteProduct(_ userEnvironment: UserEnvironment) {
+    func fetchFavouriteProduct(_ userEnvironment: UserEnvironment, _ cartEnvironment: CartEnvironment) {
         products = userEnvironment.favouriteProducts.compactMap({
-            CartItem(product: $0, price: $0.price, quantity: 1, toppings: [])
+            CartItem(id: UUID(), product: $0, price: $0.price, quantity: 1, toppings: [], cartId: cartEnvironment.cartId)
         })
         filterProducts()
     }
