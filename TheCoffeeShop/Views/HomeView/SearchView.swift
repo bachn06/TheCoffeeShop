@@ -13,8 +13,10 @@ struct SearchView: View {
     var body: some View {
         HStack {
             HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundColor(.gray)
+                Image("searchGlass")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 24, height: 24)
                 TextField("Search ..", text: $searchText)
                     .padding(.leading, 5)
             }

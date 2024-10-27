@@ -19,12 +19,18 @@ struct HomeView: View {
                 router.push(.mapView)
             } label: {
                 HStack {
-                    Image(systemName: "mappin.and.ellipse")
+                    Image("marker")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 24, height: 24)
                     Text(userEnvironment.address.isEmpty ? "Select an address" : userEnvironment.address)
                         .font(.subheadline)
                         .fontWeight(.semibold)
                     Spacer()
-                    Image(systemName: "phone.fill")
+                    Image("phone")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 24, height: 24)
                 }
                 .foregroundStyle(.black)
             }

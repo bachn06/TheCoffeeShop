@@ -3,20 +3,20 @@
 // TheCoffeeShop
 //
 // Created by BachNguyen on 27/9/24.
-// 
+//
 
 import Foundation
 
 protocol APIServiceProtocol {
     func login(userName: String, phoneNumber: String, completion: @escaping (Result<LoginResponse, NetworkServiceError>) -> Void)
     func fetchProducts(completion: @escaping (Result<[Product], NetworkServiceError>) -> Void)
-    func fetchFavouriteProducts(completion: @escaping (Result<Product, NetworkServiceError>) -> Void)
     func updateFavouriteProduct(productId: UUID, completion: @escaping (Result<Product, NetworkServiceError>) -> Void)
-    func fetchCart(completion: @escaping (Result<Cart, NetworkServiceError>) -> Void)
+    func fetchCart(userId: UUID, completion: @escaping (Result<Cart, NetworkServiceError>) -> Void)
     func fetchProfile(userId: UUID, completion: @escaping (Result<User, NetworkServiceError>) -> Void)
-    func updateProfile(user: User, completion: @escaping(Result<User, NetworkServiceError>) -> Void)
+    func updateProfile(userId: UUID, user: User, completion: @escaping(Result<User, NetworkServiceError>) -> Void)
     func createOrder(cart: Cart, completion: @escaping (Result<OrderStatusRecord, NetworkServiceError>) -> Void)
-    func updateCart(cart: Cart, completion: @escaping (Result<Cart, NetworkServiceError>) -> Void)
+    func updateCart(userId: UUID, cart: Cart, completion: @escaping (Result<Cart, NetworkServiceError>) -> Void)
+    func fetchCartItems(cartId: UUID, completion: @escaping (Result<[CartItem], NetworkServiceError>) -> Void)
 }
 
 class APIService {
@@ -30,8 +30,16 @@ class APIService {
 }
 
 extension APIService: APIServiceProtocol {
-    func updateCart(cart: Cart, completion: @escaping (Result<Cart, NetworkServiceError>) -> Void) {
-        let urlString = APIConstants.baseURL + APIConstants.apiPath.cartItems.rawValue
+    func fetchCartItems(cartId: UUID, completion: @escaping (Result<[CartItem], NetworkServiceError>) -> Void) {
+        let urlString = APIConstants.baseURL + APIConstants.apiPath.cartItems.rawValue + "/\(cartId)"
+        guard let url = URL(string: urlString) else { return }
+        
+        let requestInfo = RequestInfo(urlInfo: url, httpMethod: .get)
+        networkService.request(requestInfo: requestInfo, result: completion)
+    }
+    
+    func updateCart(userId: UUID, cart: Cart, completion: @escaping (Result<Cart, NetworkServiceError>) -> Void) {
+        let urlString = APIConstants.baseURL + APIConstants.apiPath.cartItems.rawValue + "/\(userId)"
         guard let url = URL(string: urlString) else { return }
         
         let requestInfo = RequestInfo(urlInfo: url, httpMethod: .put)
@@ -70,32 +78,24 @@ extension APIService: APIServiceProtocol {
         networkService.request(requestInfo: requestInfo, result: completion)
     }
     
-    func fetchFavouriteProducts(completion: @escaping (Result<Product, NetworkServiceError>) -> Void) {
-        let urlString = APIConstants.baseURL + APIConstants.apiPath.favouriteProducts.rawValue
-        guard let url = URL(string: urlString) else { return }
-        
-        let requestInfo = RequestInfo(urlInfo: url, httpMethod: .get)
-        networkService.request(requestInfo: requestInfo, result: completion)
-    }
-    
     func updateFavouriteProduct(productId: UUID, completion: @escaping (Result<Product, NetworkServiceError>) -> Void) {
-        let urlString = APIConstants.baseURL + APIConstants.apiPath.profile.rawValue + "/\(productId)"
+        let urlString = APIConstants.baseURL + APIConstants.apiPath.products.rawValue + "/\(productId)"
         guard let url = URL(string: urlString) else { return }
         
         let requestInfo = RequestInfo(urlInfo: url, httpMethod: .put)
         networkService.request(requestInfo: requestInfo, result: completion)
     }
     
-    func fetchCart(completion: @escaping (Result<Cart, NetworkServiceError>) -> Void) {
-        let urlString = APIConstants.baseURL + APIConstants.apiPath.carts.rawValue
+    func fetchCart(userId: UUID, completion: @escaping (Result<Cart, NetworkServiceError>) -> Void) {
+        let urlString = APIConstants.baseURL + APIConstants.apiPath.carts.rawValue + "/\(userId)"
         guard let url = URL(string: urlString) else { return }
         
         let requestInfo = RequestInfo(urlInfo: url, httpMethod: .get)
         networkService.request(requestInfo: requestInfo, result: completion)
     }
     
-    func updateProfile(user: User, completion: @escaping (Result<User, NetworkServiceError>) -> Void) {
-        let urlString = APIConstants.baseURL + APIConstants.apiPath.profile.rawValue
+    func updateProfile(userId: UUID, user: User, completion: @escaping (Result<User, NetworkServiceError>) -> Void) {
+        let urlString = APIConstants.baseURL + APIConstants.apiPath.profile.rawValue + "/\(userId)"
         guard let url = URL(string: urlString) else { return }
         
         let requestInfo = RequestInfo(urlInfo: url, httpMethod: .put)

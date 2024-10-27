@@ -14,7 +14,6 @@ enum ProfileField {
 }
 
 final class ProfileViewModel: ObservableObject {
-    @Published var avatarUrl: String = ""
     @Published var name: String = ""
     @Published var phoneNumber: String = ""
     @Published var address: String = ""
@@ -24,11 +23,12 @@ final class ProfileViewModel: ObservableObject {
     @Published var isAddressValid: Bool = true
     
     func logout(router: Router) {
+        UserDefaultsStorage.shared.removeUserId()
+        UserStorage.shared.deleteAccessToken()
         router.setRoot(.loginView)
     }
     
     func fetchProfile(_ userEnvironment: UserEnvironment) {
-        avatarUrl = userEnvironment.imageUrl
         name = userEnvironment.userName
         phoneNumber = userEnvironment.phoneNumber
         address = userEnvironment.address

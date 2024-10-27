@@ -22,11 +22,24 @@ final class TabBarViewModel: ObservableObject {
     }
     
     func fetchCart(_ cartEnvironment: CartEnvironment) {
-        APIService.shared.fetchCart { result in
+        APIService.shared.fetchCart(userId: cartEnvironment.userId) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let cart):
                     cartEnvironment.updateCart(cart)
+                case .failure:
+                    break
+                }
+            }
+        }
+    }
+    
+    func fetchCartItems(_ cartId: UUID, _ cartEnvironment: CartEnvironment) {
+        APIService.shared.fetchCartItems(cartId: cartId) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    cartEnvironment.updateItems(data)
                 case .failure:
                     break
                 }

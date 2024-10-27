@@ -23,9 +23,13 @@ final class CreateOrderViewModel: ObservableObject {
         userEnvironment.checkLocationServices()
     }
     
-    func createOrder(_ cartEnvironment: CartEnvironment, _ router: Router) {
-        cartEnvironment.cartItems = []
-        router.push(.orderConfimationView)
+    func createOrder(_ cartEnvironment: CartEnvironment, _ router: Router, selectedPaymentMethod: PaymentMethod) {
+        APIService.shared.createOrder(cart: Cart(cartItems: cartEnvironment.cartItems, paymentMethod: selectedPaymentMethod)) { _ in
+            DispatchQueue.main.async {
+                cartEnvironment.cartItems = []
+                router.push(.orderConfimationView)
+            }
+        }
     }
     
     func updatePrice() {

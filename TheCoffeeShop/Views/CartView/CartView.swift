@@ -43,9 +43,6 @@ struct CartView: View {
                                 showQuantityOption: true,
                                 showFavouriteButton: false
                             )
-                            .onTapGesture {
-                                router.push(.productDetail(item.wrappedValue))
-                            }
                         }
                     }
                     

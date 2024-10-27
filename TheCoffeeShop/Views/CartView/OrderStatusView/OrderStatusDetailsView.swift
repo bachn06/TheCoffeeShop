@@ -25,7 +25,7 @@ struct OrderStatusDetailsView: View {
             HStack(alignment: .top) {
                 VStack(spacing: 70) {
                     ForEach(statusHistory, id: \.status) { statusRecord in
-                        Image(systemName: iconForStatus(statusRecord.status))
+                        Image(iconForStatus(statusRecord.status))
                             .resizable()
                             .frame(width: 30, height: 30)
                             .padding(.trailing, 8)

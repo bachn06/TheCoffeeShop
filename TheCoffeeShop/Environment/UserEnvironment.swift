@@ -17,20 +17,24 @@ final class UserEnvironment: ObservableObject {
     @Published var products: [Product] = []
     @Published var categories: [ProductCategory] = []
     @Published var favouriteProducts: [Product] = []
+    @Published var recentlyToggled: Set<UUID> = []
     
     private var debounceWorkItem: DispatchWorkItem?
     
     func scheduleUpdateProducts(_ productId: UUID) {
         debounceWorkItem?.cancel()
         let workItem = DispatchWorkItem {
-            APIService.shared.updateFavouriteProduct(productId: productId) { _ in }
+            self.recentlyToggled.forEach { id in
+                APIService.shared.updateFavouriteProduct(productId: id) { _ in }
+            }
+            self.recentlyToggled.removeAll()
         }
         debounceWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: workItem)
     }
     
     func updateProfile() {
-        APIService.shared.updateProfile(user: User(id: userId, name: userName, avatar: imageUrl, phone: phoneNumber, address: address)) { result in
+        APIService.shared.updateProfile(userId: userId, user: User(id: userId, name: userName, avatar: imageUrl, phone: phoneNumber, address: address)) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let user):
@@ -46,22 +50,26 @@ final class UserEnvironment: ObservableObject {
         userName = user.name
         phoneNumber = user.phone
         imageUrl = user.avatar
-        address = user.address
+        if address.isEmpty {
+            address = user.address
+        }
     }
     
     func toggleFavourite(_ product: Product) {
         if let index = favouriteProducts.firstIndex(where: { $0.id == product.id }) {
             favouriteProducts.remove(at: index)
+            recentlyToggled.insert(product.id)
         } else {
             var product = product
             product.isFavourite = true
             favouriteProducts.append(product)
+            recentlyToggled.insert(product.id)
         }
-        
+
         if let index = products.firstIndex(where: { $0.id == product.id }) {
             products[index].isFavourite.toggle()
         }
-        
+
         scheduleUpdateProducts(product.id)
     }
     

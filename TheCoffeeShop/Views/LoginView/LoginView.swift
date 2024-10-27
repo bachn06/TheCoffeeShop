@@ -3,7 +3,7 @@
 // TheCoffeeShop
 //
 // Created by BachNguyen on 27/9/24.
-// 
+//
 
 import SwiftUI
 
@@ -91,7 +91,7 @@ struct LoginView: View {
                 
                 VStack {
                     Button(action: {
-                        viewModel.login(router: router)
+                        viewModel.login(router: router, userEnvironment: userEnvironment)
                     }) {
                         Text("Login")
                             .font(.headline)

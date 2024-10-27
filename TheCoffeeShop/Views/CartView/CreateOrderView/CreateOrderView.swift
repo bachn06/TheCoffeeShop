@@ -65,7 +65,10 @@ struct CreateOrderView: View {
                 
                 VStack {
                     HStack {
-                        Image(systemName: "mappin.and.ellipse")
+                        Image("marker")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 24, height: 24)
                         Text(userEnvironment.address)
                             .font(.subheadline)
                             .fontWeight(.semibold)
@@ -83,7 +86,10 @@ struct CreateOrderView: View {
                                 isExpanded.toggle()
                             }) {
                                 HStack {
-                                    Image(selectedPaymentMethod.image, bundle: nil)
+                                    Image(selectedPaymentMethod.image)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 24, height: 24)
                                     Text(selectedPaymentMethod.displayText)
                                         .fontWeight(.bold)
                                         .foregroundStyle(.black)
@@ -148,7 +154,7 @@ struct CreateOrderView: View {
                     .padding(.horizontal, 30)
                     
                     Button {
-                        viewModel.createOrder(cartEnvironment, router)
+                        viewModel.createOrder(cartEnvironment, router, selectedPaymentMethod: selectedPaymentMethod)
                     } label: {
                         VStack {
                             HStack {
@@ -156,12 +162,12 @@ struct CreateOrderView: View {
                                     .font(.system(size: 20))
                                     .foregroundColor(.white)
                                     .padding(.leading, 30)
-                                    .padding(.top, 15)
+                                    .padding(.top, 20)
                                 Spacer()
                                 Image(systemName: "chevron.right")
                                     .foregroundStyle(.white)
                                     .padding(.trailing, 30)
-                                    .padding(.top, 15)
+                                    .padding(.top, 20)
                             }
                             .frame(height: 180, alignment: .top)
                             .frame(maxWidth: .infinity)

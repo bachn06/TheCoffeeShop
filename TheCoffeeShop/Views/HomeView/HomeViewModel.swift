@@ -60,7 +60,7 @@ final class HomeViewModel: ObservableObject {
                 }
             }
         } else {
-            products = userEnvironment.products.compactMap({ CartItem(id: UUID(), product: $0, size: $0.sizes.first, price: $0.price, quantity: 1, toppings: [], cartId: cartEnvironment.cartId) })
+            products = userEnvironment.products.compactMap({ CartItem(id: UUID(), product: $0, size: $0.sizes.first, price: $0.price, quantity: 1, toppings: $0.toppings.compactMap({ Topping(topping: $0, quantity: 0) }), cartId: cartEnvironment.cartId) })
             getProductCategories(userEnvironment.products)
             filterProducts()
         }
@@ -69,7 +69,7 @@ final class HomeViewModel: ObservableObject {
     func handleProductResponse(_ products: [Product], _ userEnvironment: UserEnvironment, _ cartEnvironment: CartEnvironment) {
         userEnvironment.products = products
         userEnvironment.favouriteProducts = products.filter({ $0.isFavourite })
-        self.products = userEnvironment.products.compactMap({ CartItem(id: UUID(), product: $0, size: $0.sizes.first, price: $0.price, quantity: 1, toppings: [], cartId: cartEnvironment.cartId) })
+        self.products = userEnvironment.products.compactMap({ CartItem(id: UUID(), product: $0, size: $0.sizes.first, price: $0.price, quantity: 1, toppings: $0.toppings.compactMap({ Topping(topping: $0, quantity: 0)}), cartId: cartEnvironment.cartId) })
         getProductCategories(userEnvironment.products)
         filterProducts()
     }

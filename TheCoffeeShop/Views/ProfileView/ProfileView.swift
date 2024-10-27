@@ -22,7 +22,7 @@ struct ProfileView: View {
                 ZStack {
                     Spacer()
                         .frame(width: 100, height: 100)
-                    AsyncCachedImage(url: URL(string: viewModel.avatarUrl)) { image in
+                    AsyncCachedImage(url: URL(string: userEnvironment.imageUrl)) { image in
                         image
                             .resizable()
                             .scaledToFill()
@@ -53,8 +53,17 @@ struct ProfileView: View {
                             viewModel.updateProfileField(.name, userEnvironment)
                         }
                     }) {
-                        Image(systemName: isEditingName ? "checkmark" : "pencil")
-                            .foregroundColor(.gray)
+                        if isEditingName {
+                            Image(systemName: "checkmark")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                                .foregroundStyle(.gray)
+                        } else {
+                            Image("pencil")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                                .foregroundColor(.gray)
+                        }
                     }
                 }
             }
@@ -65,7 +74,9 @@ struct ProfileView: View {
                     .padding(.bottom, 5)
                 
                 HStack {
-                    Image(systemName: "phone.fill")
+                    Image("phone")
+                        .resizable()
+                        .frame(width: 24, height: 24)
                         .foregroundColor(.gray)
                     
                     if isEditingPhone {
@@ -85,13 +96,24 @@ struct ProfileView: View {
                             viewModel.updateProfileField(.phoneNumber, userEnvironment)
                         }
                     }) {
-                        Image(systemName: isEditingPhone ? "checkmark" : "pencil")
-                            .foregroundColor(.gray)
+                        if isEditingPhone {
+                            Image(systemName: "checkmark")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                                .foregroundStyle(.gray)
+                        } else {
+                            Image("pencil")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                        }
                     }
                 }
                 
                 HStack {
-                    Image(systemName: "mappin.and.ellipse")
+                    Image("marker")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 24, height: 24)
                         .foregroundColor(.gray)
                     
                     if isEditingAddress {
@@ -112,8 +134,16 @@ struct ProfileView: View {
                             viewModel.updateProfileField(.address, userEnvironment)
                         }
                     }) {
-                        Image(systemName: isEditingAddress ? "checkmark" : "pencil")
-                            .foregroundColor(.gray)
+                        if isEditingAddress {
+                            Image(systemName: "checkmark")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                                .foregroundStyle(.gray)
+                        } else {
+                            Image("pencil")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                        }
                     }
                 }
             }
@@ -129,7 +159,10 @@ struct ProfileView: View {
                         Text("Logout")
                             .foregroundColor(Color.brown)
                         
-                        Image(systemName: "arrow.right")
+                        Image("logout")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 24, height: 24)
                             .foregroundColor(Color.brown)
                     }
                 }
