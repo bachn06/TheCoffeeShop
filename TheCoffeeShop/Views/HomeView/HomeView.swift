@@ -19,15 +19,15 @@ struct HomeView: View {
                 router.push(.mapView)
             } label: {
                 HStack {
-                    Image("marker")
+                    AppImage.marker
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 24, height: 24)
-                    Text(userEnvironment.address.isEmpty ? "Select an address" : userEnvironment.address)
+                    Text(viewModel.getAddress(userEnvironment))
                         .font(.subheadline)
                         .fontWeight(.semibold)
                     Spacer()
-                    Image("phone")
+                    AppImage.phone
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 24, height: 24)

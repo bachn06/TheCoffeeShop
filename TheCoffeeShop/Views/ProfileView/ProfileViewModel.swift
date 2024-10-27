@@ -18,9 +18,18 @@ final class ProfileViewModel: ObservableObject {
     @Published var phoneNumber: String = ""
     @Published var address: String = ""
     
-    @Published var isNameValid: Bool = true
-    @Published var isPhoneNumberValid: Bool = true
-    @Published var isAddressValid: Bool = true
+    @Published var tempName: String = ""
+    @Published var tempPhoneNumber: String = ""
+    @Published var tempAddress: String = ""
+    
+    @Published var validationStatus: [ProfileField: Bool] = [
+        .name: true,
+        .phoneNumber: true,
+        .address: true
+    ]
+    
+    @Published var showError: Bool = false
+    @Published var errorMessage: String = ""
     
     func logout(router: Router) {
         UserDefaultsStorage.shared.removeUserId()
@@ -32,46 +41,76 @@ final class ProfileViewModel: ObservableObject {
         name = userEnvironment.userName
         phoneNumber = userEnvironment.phoneNumber
         address = userEnvironment.address
+        
+        // Set initial temp values
+        tempName = name
+        tempPhoneNumber = phoneNumber
+        tempAddress = address
     }
     
     func updateProfileField(_ field: ProfileField, _ userEnvironment: UserEnvironment) {
-        guard validateField(field) else { return }
+        guard validate(field) else {
+            resetTempField(field)
+            return
+        }
+        
+        let fieldValue = getFieldValue(for: field)
+        updateEnvironment(field, with: fieldValue, in: userEnvironment)
+        syncFieldToTemp(field)
+    }
+    
+    private func validate(_ field: ProfileField) -> Bool {
+        let isValid: Bool
         switch field {
         case .name:
-            updateName(name, userEnvironment)
+            isValid = !tempName.isEmpty
+            errorMessage = isValid ? "" : "Name cannot be empty."
         case .phoneNumber:
-            updatePhoneNumber(phoneNumber, userEnvironment)
+            isValid = tempPhoneNumber.allSatisfy(\.isNumber) && tempPhoneNumber.count >= 10 && tempPhoneNumber.hasPrefix("0")
+            errorMessage = isValid ? "" : "Phone number must start with 0, be 10 digits long, and contain only numbers."
         case .address:
-            updateAddress(address, userEnvironment)
+            isValid = !tempAddress.isEmpty
+            errorMessage = isValid ? "" : "Address cannot be empty."
+        }
+        
+        validationStatus[field] = isValid
+        if !isValid {
+            showError = true
+        }
+        
+        return isValid
+    }
+    
+    private func getFieldValue(for field: ProfileField) -> String {
+        switch field {
+        case .name: return tempName
+        case .phoneNumber: return tempPhoneNumber
+        case .address: return tempAddress
         }
     }
     
-    private func validateField(_ field: ProfileField) -> Bool {
+    private func updateEnvironment(_ field: ProfileField, with value: String, in userEnvironment: UserEnvironment) {
         switch field {
-        case .name:
-            isNameValid = !name.isEmpty
-            return isNameValid
-        case .phoneNumber:
-            isPhoneNumberValid = phoneNumber.allSatisfy { $0.isNumber } && phoneNumber.count >= 10 && phoneNumber.prefix(1).contains("0")
-            return isPhoneNumberValid
-        case .address:
-            isAddressValid = !address.isEmpty
-            return isAddressValid
+        case .name: userEnvironment.userName = value
+        case .phoneNumber: userEnvironment.phoneNumber = value
+        case .address: userEnvironment.address = value
+        }
+        userEnvironment.updateProfile()
+    }
+    
+    private func syncFieldToTemp(_ field: ProfileField) {
+        switch field {
+        case .name: name = tempName
+        case .phoneNumber: phoneNumber = tempPhoneNumber
+        case .address: address = tempAddress
         }
     }
     
-    private func updateName(_ name: String, _ userEnvironment: UserEnvironment) {
-        self.name = name
-        userEnvironment.userName = name
-    }
-    
-    private func updatePhoneNumber(_ phoneNumber: String, _ userEnvironment: UserEnvironment) {
-        self.phoneNumber = phoneNumber
-        userEnvironment.phoneNumber = phoneNumber
-    }
-    
-    private func updateAddress(_ address: String, _ userEnvironment: UserEnvironment) {
-        self.address = address
-        userEnvironment.address = address
+    private func resetTempField(_ field: ProfileField) {
+        switch field {
+        case .name: tempName = name
+        case .phoneNumber: tempPhoneNumber = phoneNumber
+        case .address: tempAddress = address
+        }
     }
 }

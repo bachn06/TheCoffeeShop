@@ -99,4 +99,8 @@ final class HomeViewModel: ObservableObject {
         userEnvironment.toggleFavourite(cartItem.product)
         fetchProducts(userEnvironment, cartEnvironment)
     }
+    
+    func getAddress(_ userEnvironment: UserEnvironment) -> String {
+        userEnvironment.address.isEmpty ? "Select an address" : userEnvironment.address
+    }
 }

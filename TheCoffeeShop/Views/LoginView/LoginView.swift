@@ -17,19 +17,19 @@ struct LoginView: View {
             ZStack {
                 Color(hex: "#B29F91")
                 VStack {
-                    Image("loginBackground1", bundle: nil)
+                    AppImage.loginBackground1
                         .resizable()
                         .scaledToFit()
                         .ignoresSafeArea()
                     
                     Spacer()
                     
-                    Image("loginBackground2", bundle: nil)
+                    AppImage.loginBackground2
                         .resizable()
                         .scaledToFit()
                         .ignoresSafeArea()
                 }
-                Image("loginBackground3", bundle: nil)
+                AppImage.loginBackground3
                     .resizable()
                     .scaledToFit()
                     .ignoresSafeArea()

@@ -19,155 +19,13 @@ struct ProfileView: View {
     var body: some View {
         VStack(spacing: 30) {
             VStack(spacing: 10) {
-                ZStack {
-                    Spacer()
-                        .frame(width: 100, height: 100)
-                    AsyncCachedImage(url: URL(string: userEnvironment.imageUrl)) { image in
-                        image
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 100, height: 100)
-                            .clipShape(Circle())
-                            .overlay(
-                                Circle().stroke(Color.black, lineWidth: 1)
-                            )
-                    } placeholder: {
-                        ProgressView()
-                    }
-                }
-                
-                HStack {
-                    if isEditingName {
-                        TextField("Enter Name", text: $viewModel.name)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .frame(width: 200)
-                    } else {
-                        Text(viewModel.name)
-                            .font(.title2)
-                            .fontWeight(.bold)
-                    }
-                    
-                    Button(action: {
-                        isEditingName.toggle()
-                        if !isEditingName {
-                            viewModel.updateProfileField(.name, userEnvironment)
-                        }
-                    }) {
-                        if isEditingName {
-                            Image(systemName: "checkmark")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundStyle(.gray)
-                        } else {
-                            Image("pencil")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(.gray)
-                        }
-                    }
-                }
-            }
-            
-            VStack(alignment: .leading, spacing: 20) {
-                Text("Settings")
-                    .font(.headline)
-                    .padding(.bottom, 5)
-                
-                HStack {
-                    Image("phone")
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                        .foregroundColor(.gray)
-                    
-                    if isEditingPhone {
-                        TextField("Enter Phone Number", text: $viewModel.phoneNumber)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(width: 200)
-                    } else {
-                        Text(viewModel.phoneNumber)
-                            .font(.body)
-                    }
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        isEditingPhone.toggle()
-                        if !isEditingName {
-                            viewModel.updateProfileField(.phoneNumber, userEnvironment)
-                        }
-                    }) {
-                        if isEditingPhone {
-                            Image(systemName: "checkmark")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundStyle(.gray)
-                        } else {
-                            Image("pencil")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                        }
-                    }
-                }
-                
-                HStack {
-                    Image("marker")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 24, height: 24)
-                        .foregroundColor(.gray)
-                    
-                    if isEditingAddress {
-                        TextField("Enter Address", text: $viewModel.address)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(width: 200)
-                    } else {
-                        Text(viewModel.address)
-                            .font(.body)
-                            .lineLimit(1)
-                    }
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        isEditingAddress.toggle()
-                        if !isEditingName {
-                            viewModel.updateProfileField(.address, userEnvironment)
-                        }
-                    }) {
-                        if isEditingAddress {
-                            Image(systemName: "checkmark")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundStyle(.gray)
-                        } else {
-                            Image("pencil")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                        }
-                    }
-                }
+                profileView
+                settingsSection
             }
             .padding(.horizontal, 30)
             
-            HStack {
-                Spacer()
-                
-                Button(action: {
-                    viewModel.logout(router: router)
-                }) {
-                    HStack {
-                        Text("Logout")
-                            .foregroundColor(Color.brown)
-                        
-                        Image("logout")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 24, height: 24)
-                            .foregroundColor(Color.brown)
-                    }
-                }
-            }
-            .padding(.horizontal, 30)
+            logoutButton
+                .padding(.horizontal, 30)
             
             Spacer()
         }
@@ -175,10 +33,164 @@ struct ProfileView: View {
         .onAppear {
             viewModel.fetchProfile(userEnvironment)
         }
+        .alert(isPresented: $viewModel.showError) {
+            Alert(
+                title: Text("Validation Error"),
+                message: Text(viewModel.errorMessage),
+                dismissButton: .default(Text("OK"))
+            )
+        }
+    }
+    
+    private var profileView: some View {
+        VStack {
+            ZStack {
+                Spacer()
+                    .frame(width: 100, height: 100)
+                AsyncCachedImage(url: URL(string: userEnvironment.imageUrl)) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 100, height: 100)
+                        .clipShape(Circle())
+                        .overlay(Circle().stroke(Color.black, lineWidth: 1))
+                } placeholder: {
+                    ProgressView()
+                        .frame(width: 100, height: 100)
+                }
+            }
+            
+            HStack {
+                if isEditingName {
+                    TextField("Enter Name", text: $viewModel.tempName)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .frame(width: 200)
+                } else {
+                    Text(viewModel.name)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                }
+                
+                Button(action: {
+                    isEditingName.toggle()
+                    if !isEditingName {
+                        viewModel.updateProfileField(.name, userEnvironment)
+                    }
+                }) {
+                    if isEditingName {
+                        AppImage.checkMark
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .foregroundStyle(.gray)
+                    } else {
+                        AppImage.pencil
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .foregroundColor(.gray)
+                    }
+                }
+            }
+        }
+    }
+    
+    private var settingsSection: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("Settings")
+                .font(.headline)
+                .padding(.bottom, 5)
+            
+            EditableField(
+                text: $viewModel.tempPhoneNumber,
+                isEditing: $isEditingPhone,
+                placeholder: "Enter Phone Number",
+                icon: AppImage.phone,
+                updateAction: { viewModel.updateProfileField(.phoneNumber, userEnvironment) }
+            )
+            
+            EditableField(
+                text: $viewModel.tempAddress,
+                isEditing: $isEditingAddress,
+                placeholder: "Enter Address",
+                icon: AppImage.marker,
+                updateAction: { viewModel.updateProfileField(.address, userEnvironment) }
+            )
+        }
+    }
+    
+    private var logoutButton: some View {
+        HStack {
+            Spacer()
+            Button(action: { viewModel.logout(router: router) }) {
+                HStack {
+                    Text("Logout")
+                        .foregroundColor(.brown)
+                    AppImage.logout
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(.brown)
+                }
+            }
+        }
+    }
+}
+
+// MARK: - EditableField Subview
+struct EditableField: View {
+    @Binding var text: String
+    @Binding var isEditing: Bool
+    var placeholder: String
+    var font: Font = .body
+    var icon: Image? = nil
+    var updateAction: () -> Void
+    
+    var body: some View {
+        HStack {
+            if let icon = icon {
+                icon
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 24, height: 24)
+                    .foregroundColor(.gray)
+            }
+            
+            if isEditing {
+                TextField(placeholder, text: $text)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .frame(width: 200)
+            } else {
+                Text(text)
+                    .font(font)
+                    .lineLimit(1)
+            }
+            
+            Spacer()
+            
+            Button(action: {
+                isEditing.toggle()
+                if !isEditing {
+                    updateAction()
+                }
+            }) {
+                if isEditing {
+                    AppImage.checkMark
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(.gray)
+                } else {
+                    AppImage.pencil
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(.gray)
+                }
+            }
+        }
     }
 }
 
 #Preview {
     ProfileView()
         .environmentObject(UserEnvironment())
+        .environmentObject(Router())
 }

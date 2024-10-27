@@ -13,7 +13,7 @@ enum TabbarItems: Int, CaseIterable {
     case cart
     case profile
     
-    var title: String{
+    var title: String {
         switch self {
         case .home:
             return "Home"
@@ -26,16 +26,16 @@ enum TabbarItems: Int, CaseIterable {
         }
     }
     
-    var iconName: String{
+    var icon: Image {
         switch self {
         case .home:
-            return "home"
+            AppImage.home
         case .favorite:
-            return "favourite"
+            AppImage.favourite
         case .cart:
-            return "cart"
+            AppImage.cart
         case .profile:
-            return "profile"
+            AppImage.profile
         }
     }
 }
@@ -82,22 +82,22 @@ struct TabBarView: View {
                                         .frame(width: 24, height: 24)
                                         .clipShape(Circle())
                                 } placeholder: {
-                                    Image(item.iconName)
+                                    item.icon
                                         .renderingMode(.template)
                                         .resizable()
                                         .frame(width: 24, height: 24)
                                         .foregroundStyle(
-                                            selectedTab == item ? LinearGradient(gradient: Gradient(colors: [Color(hex: "#CB8A58"), Color(hex: "#562B1A")]), startPoint: .leading, endPoint: .trailing) : LinearGradient(colors: [Color(hex: "#CBCBD4")], startPoint: .leading, endPoint: .trailing)
+                                            gradient(for: item)
                                         )
                                 }
 
                             } else {
-                                Image(item.iconName)
+                                item.icon
                                     .renderingMode(.template)
                                     .resizable()
                                     .frame(width: 24, height: 24)
                                     .foregroundStyle(
-                                        selectedTab == item ? LinearGradient(gradient: Gradient(colors: [Color(hex: "#CB8A58"), Color(hex: "#562B1A")]), startPoint: .leading, endPoint: .trailing) : LinearGradient(colors: [Color(hex: "#CBCBD4")], startPoint: .leading, endPoint: .trailing)
+                                        gradient(for: item)
                                     )
                             }
                             
@@ -116,7 +116,7 @@ struct TabBarView: View {
                         Text(item.title)
                             .font(.caption)
                             .foregroundStyle(
-                                selectedTab == item ? LinearGradient(gradient: Gradient(colors: [Color(hex: "#CB8A58"), Color(hex: "#562B1A")]), startPoint: .leading, endPoint: .trailing) : LinearGradient(colors: [Color(hex: "#CBCBD4")], startPoint: .leading, endPoint: .trailing)
+                                gradient(for: item)
                             )
                     }
                     .onTapGesture {
@@ -133,6 +133,13 @@ struct TabBarView: View {
         })
         .navigationBarBackButtonHidden()
         .ignoresSafeArea(.keyboard)
+    }
+    
+    private func gradient(for item: TabbarItems) -> LinearGradient {
+        LinearGradient(
+            gradient: Gradient(colors: selectedTab == item ? [Color(hex: "#CB8A58"), Color(hex: "#562B1A")] : [Color(hex: "#CBCBD4")]),
+            startPoint: .leading, endPoint: .trailing
+        )
     }
     
     private func titleWidth(title: String) -> CGFloat {

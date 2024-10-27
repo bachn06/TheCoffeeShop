@@ -17,7 +17,7 @@ struct CartView: View {
             VStack(alignment: .leading) {
                 HStack {
                     Spacer()
-                    Image("carbon_delivery")
+                    AppImage.deliveryTruck
                         .resizable()
                         .frame(width: 40, height: 40)
                         .padding(10)
@@ -78,7 +78,7 @@ struct CartView: View {
                     GeometryReader { geo in
                         HStack {
                             Spacer()
-                            Image("emptyCart")
+                            AppImage.emptyCart
                                 .resizable()
                                 .frame(width: 200, height: 200)
                             Spacer()

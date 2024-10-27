@@ -25,11 +25,11 @@ struct OrderStatusDetailsView: View {
             HStack(alignment: .top) {
                 VStack(spacing: 70) {
                     ForEach(statusHistory, id: \.status) { statusRecord in
-                        Image(iconForStatus(statusRecord.status))
+                        iconForStatus(statusRecord.status)
                             .resizable()
                             .frame(width: 30, height: 30)
                             .padding(.trailing, 8)
-                            .foregroundStyle(isActive || statusRecord.status == .confirmed ? Color(hex: "#CB8A58") : .black)
+                            .foregroundStyle(color(for: statusRecord.status))
                     }
                 }
                 .padding(.top, 15)
@@ -42,13 +42,13 @@ struct OrderStatusDetailsView: View {
                                 .frame(width: 24, height: 24)
                                 .overlay(
                                     Circle()
-                                        .stroke(isActive || statusRecord.status == .confirmed ? Color(hex: "#CB8A58") : Color(hex: "#D9D9D9"), lineWidth: 3)
+                                        .stroke(color(for: statusRecord.status), lineWidth: 3)
                                 )
                                 .padding(.top, -5)
                             
                             if statusRecord.status != .completed {
                                 Rectangle()
-                                    .fill(isActive || statusRecord.status == .confirmed ? Color(hex: "#CB8A58") : Color(hex: "#D9D9D9"))
+                                    .fill(color(for: statusRecord.status))
                                     .frame(width: 3, height: 80)
                                     .padding(.top, 1)
                             }
@@ -83,16 +83,20 @@ struct OrderStatusDetailsView: View {
         .navigationBarBackButtonHidden()
     }
     
-    func iconForStatus(_ status: OrderStatus) -> String {
+    private func color(for status: OrderStatus) -> Color {
+        isActive || status == .confirmed ? Color(hex: "#CB8A58") : Color(hex: "#D9D9D9")
+    }
+    
+    func iconForStatus(_ status: OrderStatus) -> Image {
         switch status {
         case .confirmed:
-            return "cube"
+            AppImage.cube
         case .processed:
-            return "recordCircle"
+            AppImage.recordCircle
         case .delivery:
-            return "truck"
+            AppImage.truck
         case .completed:
-            return "thumpsup"
+            AppImage.thumpsUp
         }
     }
 }

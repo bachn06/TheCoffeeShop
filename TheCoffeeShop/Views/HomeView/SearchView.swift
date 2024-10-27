@@ -13,7 +13,7 @@ struct SearchView: View {
     var body: some View {
         HStack {
             HStack {
-                Image("searchGlass")
+                AppImage.searchGlass
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 24, height: 24)

@@ -65,7 +65,7 @@ struct CreateOrderView: View {
                 
                 VStack {
                     HStack {
-                        Image("marker")
+                        AppImage.marker
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 24, height: 24)
@@ -86,7 +86,7 @@ struct CreateOrderView: View {
                                 isExpanded.toggle()
                             }) {
                                 HStack {
-                                    Image(selectedPaymentMethod.image)
+                                    selectedPaymentMethod.image
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: 24, height: 24)
@@ -113,7 +113,10 @@ struct CreateOrderView: View {
                                         isExpanded = false
                                     }) {
                                         HStack {
-                                            Image(paymentMethod.image, bundle: nil)
+                                            paymentMethod.image
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 24, height: 24)
                                             Text(paymentMethod.displayText)
                                                 .fontWeight(.bold)
                                             

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct Product: Codable, Identifiable, Hashable {
     var id: UUID
@@ -69,14 +70,14 @@ enum PaymentMethod: String, Codable {
         }
     }
     
-    var image: String {
+    var image: Image {
         switch self {
         case .applePay:
-            "applepay"
+            AppImage.applePay
         case .visaOrMastercard:
-            "creditcard"
+            AppImage.creditCard
         case .cash:
-            "cash"
+            AppImage.cash
         }
     }
 }
